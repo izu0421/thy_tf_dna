@@ -51,7 +51,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--tf1);outline-offset
 
 section{border-bottom:1px solid var(--rule)}
 section>.wrap{padding-block:40px}
-h2{font-size:clamp(23px,3.2vw,31px);margin:6px 0 18px;max-width:24ch}
+h2{font-size:clamp(23px,3.2vw,31px);margin:0 0 18px}
 
 .shell{border:1px solid var(--rule);background:var(--surface)}
 .duo{display:grid;grid-template-columns:1fr 1fr}
@@ -100,8 +100,7 @@ footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;co
 
 
 <header class="mast"><div class="wrap">
-  <h1>Same motifs, different arrangement</h1>
-  <p>Two transcription factors on DNA, predicted with AlphaFold&nbsp;3. High- and low-syntax arrangement side by side.</p>
+  <h1>Structural basis of TF-DNA syntax</h1>
   <div class="strip">
     <div><b>6,400</b><span>models</span></div>
     <div><b>32</b><span>TF pairs</span></div>
@@ -111,8 +110,7 @@ footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;co
 </div></header>
 
 <section><div class="wrap">
-  <span class="eyebrow">RUNX1 · LEF1</span>
-  <h2>A contact that is on or off</h2>
+  <h2>RUNX1 – LEF1</h2>
   <div class="shell" id="lef1">
     <div class="duo">
       <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
@@ -134,15 +132,13 @@ footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;co
     </div></div>
   </div>
   <div class="facts">
-    <div><b><span class="h">125</span><em>vs</em><span class="l">0</span> Å²</b><span>mean domain contact area</span></div>
-    <div><b><span class="h">100%</span><em>vs</em><span class="l">0%</span></b><span>of models with the domains touching</span></div>
-    <div><b>100 / 100</b><span>backgrounds where high beats low</span></div>
+    <div><b><span class="h">125</span><em>vs</em><span class="l">0</span> Å²</b><span>mean contact area, high vs low</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">0%</span></b><span>models with the domains touching</span></div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <span class="eyebrow">RUNX1 · ETS1</span>
-  <h2>The crystal-structure contact, only in high</h2>
+  <h2>RUNX1 – ETS1</h2>
   <div class="shell" id="ets1">
     <div class="duo">
       <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
@@ -164,9 +160,8 @@ footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;co
     </div></div>
   </div>
   <div class="facts">
-    <div><b><span class="h">853</span><em>vs</em><span class="l">438</span> Å²</b><span>mean contact area in the regions shown</span></div>
-    <div><b><span class="h">100%</span><em>vs</em><span class="l">8%</span></b><span>of models where RUNX1 191–205 reaches the ETS domain end</span></div>
-    <div><b>PDB 4L0Z</b><span>same RUNX1 residues make the contact in the crystal</span></div>
+    <div><b><span class="h">853</span><em>vs</em><span class="l">438</span> Å²</b><span>mean contact area, high vs low</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">8%</span></b><span>models with the RUNX1 191–205 contact</span></div>
   </div>
 </div></section>
 
