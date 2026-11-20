@@ -3,383 +3,278 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TF motif syntax in AlphaFold 3</title>
-<meta name="description" content="Does the arrangement of two transcription-factor motifs on DNA change how the two proteins contact each other? An AlphaFold 3 screen of 6,400 TF–TF–DNA complexes.">
+<meta name="description" content="AlphaFold 3 models of RUNX1 with LEF1 and ETS1 on high- and low-syntax DNA, side by side in 3D.">
+<title>TF syntax structures</title>
+
 <style>
-  :root {
-    --paper: #fbfaf7;
-    --panel: #ffffff;
-    --ink: #1b2326;
-    --ink-soft: #55626a;
-    --rule: #e4e1d8;
-    --teal: #1f9e96;
-    --teal-deep: #12706a;
-    --yellow: #f2c14e;
-    --coral: #e4572e;
-    --high: #2b8cbe;
-    --low: #e34a33;
-    --tint: #eef6f5;
-    --shadow: 0 1px 2px rgba(20, 30, 30, .06), 0 8px 24px rgba(20, 30, 30, .06);
-    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper: #12181a;
-      --panel: #1a2224;
-      --ink: #e9eeee;
-      --ink-soft: #a3b0b3;
-      --rule: #2a3538;
-      --teal: #3fc0b7;
-      --teal-deep: #7fd9d2;
-      --tint: #172a2a;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
-    }
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; background: var(--paper); color: var(--ink);
-    font: 17px/1.65 var(--sans); -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--teal-deep); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-  a:hover { color: var(--coral); }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+/* Layout: one viewer per TF pair, each followed by its DNA read-out and three numbers.
+   Colours are the figure colours of the project: RUNX1 teal, partner yellow, contact orange. */
+:root{
+  --bg:#e9eceb; --surface:#fbfcfb; --surface-2:#f0f3f2;
+  --ink:#131a19; --ink-2:#4d5957; --ink-3:#7b8785;
+  --rule:#c8d0ce; --rule-2:#dce2e0;
+  --tf1:#1f9e96; --tf1-soft:#bfe3df; --tf2:#e0a82e; --contact:#e4572e; --dna:#b9c1bf;
+  --m1a:#9adbd4; --m1b:#0a4f4a; --m2a:#f2cf7a; --m2b:#7a4a03;
+  --high:#2b7fb0; --low:#d5452f;
+  --mono:Arial,Helvetica,sans-serif;
+  --sans:Arial,Helvetica,sans-serif;
+  --cond:Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
+  --rule:#2b3533;--rule-2:#222b29;--tf1:#3fc0b7;--tf1-soft:#24504c;--tf2:#f2c14e;--contact:#ff7a52;--dna:#59635f;
+  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
+  --rule:#2b3533;--rule-2:#222b29;--tf1:#3fc0b7;--tf1-soft:#24504c;--tf2:#f2c14e;--contact:#ff7a52;--dna:#59635f;
+  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}
 
-  /* top bar */
-  .bar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--paper) 88%, transparent);
-         backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
-  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 54px; }
-  .brand { font: 600 15px/1 var(--sans); letter-spacing: .02em; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-  .dots { display: inline-flex; gap: 4px; }
-  .dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
-  .bar nav { display: flex; gap: 22px; font-size: 14px; }
-  .bar nav a { color: var(--ink-soft); text-decoration: none; }
-  .bar nav a:hover { color: var(--ink); }
-  @media (max-width: 760px) { .bar nav a:not(.keep) { display: none; } }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--cond);font-weight:700;margin:0;line-height:1.08;letter-spacing:-0.02em;text-wrap:balance}
+p{margin:0}
+a{color:var(--tf1);text-decoration:none;border-bottom:1px solid var(--rule)}
+a:hover{border-bottom-color:var(--tf1)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--tf1);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
 
-  /* hero */
-  .hero { padding: 72px 0 40px; }
-  .hero .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
-  .eyebrow { font: 600 12.5px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--teal-deep); margin: 0 0 18px; }
-  h1 { font: 500 clamp(34px, 5vw, 54px)/1.08 var(--serif); letter-spacing: -.015em; margin: 0 0 22px; text-wrap: balance; }
-  .lede { font-size: 19px; color: var(--ink-soft); margin: 0 0 28px; max-width: 34em; }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
-  .btn { display: inline-block; padding: 11px 18px; border-radius: 999px; font: 600 14.5px/1 var(--sans); text-decoration: none; border: 1px solid var(--rule); color: var(--ink); background: var(--panel); }
-  .btn.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
-  .btn:hover { border-color: var(--coral); color: var(--coral); }
-  .btn.primary:hover { background: var(--coral); border-color: var(--coral); color: #fff; }
-  .pairfig { background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 18px 18px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .pairfig figure { margin: 0; text-align: center; }
-  .pairfig img { width: 100%; height: 250px; object-fit: contain; display: block; }
-  .pairfig figcaption { font: 600 12.5px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; padding-top: 8px; }
-  .pairfig .hi { color: var(--high); } .pairfig .lo { color: var(--low); }
-  .seq { font: 600 13px/1 var(--mono); letter-spacing: .12em; text-align: center; padding-top: 6px; white-space: nowrap; }
-  .seq .g, .pairfig .g { color: #a9b1b4; font-weight: 400; }
-  .m1 { color: #0f766e; font-weight: 600; } .m2 { color: #b7791f; font-weight: 600; }
-  @media (max-width: 520px) { .seq { font-size: 10.5px; letter-spacing: .04em; } }
-  .pairfig p { grid-column: 1 / -1; margin: 6px 0 0; font-size: 13px; line-height: 1.45; color: #55626a; text-align: center; }
-  @media (max-width: 900px) { .hero .hero-grid { grid-template-columns: 1fr; } .hero { padding-top: 44px; } }
+.mast{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast .wrap{padding-block:36px 0}
+.mast h1{font-size:clamp(34px,6.4vw,58px);letter-spacing:-0.035em}
+.mast p{max-width:46ch;color:var(--ink-2);margin-top:8px;font-size:16px}
+.strip{display:flex;flex-wrap:wrap;margin-top:24px;border-top:1px solid var(--rule-2);font-family:var(--mono);font-size:12px}
+.strip>div{padding:12px 22px 12px 0;margin-right:22px;border-right:1px solid var(--rule-2);display:flex;gap:7px;align-items:baseline}
+.strip>div:last-child{border-right:0}
+.strip b{font-weight:500;font-variant-numeric:tabular-nums}
+.strip span{color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;font-size:10px}
 
-  /* stats */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; margin: 48px 0 0; }
-  .stats div { background: var(--panel); padding: 20px 22px; }
-  .stats b { display: block; font: 500 32px/1.1 var(--serif); letter-spacing: -.01em; }
-  .stats span { font-size: 14px; line-height: 1.4; display: block; margin-top: 6px; color: var(--ink-soft); }
-  @media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+section{border-bottom:1px solid var(--rule)}
+section>.wrap{padding-block:40px}
+h2{font-size:clamp(23px,3.2vw,31px);margin:6px 0 18px;max-width:24ch}
 
-  /* sections */
-  section { padding: 64px 0; border-top: 1px solid var(--rule); }
-  section.first { border-top: 0; }
-  .kicker { font: 600 12.5px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--coral); margin: 0 0 12px; }
-  h2 { font: 500 clamp(26px, 3.4vw, 36px)/1.15 var(--serif); letter-spacing: -.01em; margin: 0 0 18px; text-wrap: balance; }
-  h3 { font: 600 18px/1.3 var(--sans); margin: 34px 0 8px; }
-  p { margin: 0 0 16px; }
-  .prose { max-width: 720px; }
-  .muted { color: var(--ink-soft); }
+.shell{border:1px solid var(--rule);background:var(--surface)}
+.duo{display:grid;grid-template-columns:1fr 1fr}
+.pane{min-width:0;display:flex;flex-direction:column}
+.pane+.pane{border-left:1px solid var(--rule-2)}
+.vp{position:relative;width:100%;height:clamp(300px,52vh,540px)}
+@media (max-width:720px){.duo{grid-template-columns:1fr}.pane+.pane{border-left:0;border-top:1px solid var(--rule-2)}.vp{height:clamp(260px,44vh,400px)}}
+.vp canvas{display:block}
+.vpnote{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.07em;text-transform:uppercase;pointer-events:none}
+.badge{position:absolute;left:14px;top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
+.badge b{font-weight:500}
+.badge.high b{color:var(--high)} .badge.low b{color:var(--low)}
+.badge span{color:var(--ink-3)}
+.ctrls{display:flex;flex-wrap:wrap;border-top:1px solid var(--rule);background:var(--surface-2)}
+.ctrls button{appearance:none;background:none;border:0;border-right:1px solid var(--rule-2);font-family:var(--mono);font-size:11.5px;color:var(--ink-2);padding:12px 16px;cursor:pointer}
+.ctrls button:hover{color:var(--ink);background:var(--surface)}
+.ctrls button[aria-pressed="true"]{color:var(--ink);background:var(--surface);box-shadow:inset 0 2px 0 var(--tf1)}
+.ctrls button[data-c="high"][aria-pressed="true"]{box-shadow:inset 0 2px 0 var(--high)}
+.ctrls button[data-c="low"][aria-pressed="true"]{box-shadow:inset 0 2px 0 var(--low)}
+.ctrls .gap{width:14px;border-right:1px solid var(--rule-2)}
+.ctrls .sp{flex:1}
 
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 28px 0 8px; counter-reset: step; }
-  .steps li { list-style: none; background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; padding: 18px 18px 16px; font-size: 15px; line-height: 1.5; counter-increment: step; }
-  .steps li::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--tint); color: var(--teal-deep); font: 600 14px/1 var(--sans); margin-bottom: 12px; }
-  .steps b { display: block; margin-bottom: 4px; }
-  ol.steps { padding: 0; }
-  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+.seq{padding:10px 14px;border-top:1px solid var(--rule-2);text-align:center;overflow:hidden}
+.seq .nt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(11px,1.5vw,15px);letter-spacing:.14em;white-space:nowrap;color:var(--ink-3)}
+.legendrow{display:flex;padding:10px 16px;border-top:1px solid var(--rule-2)}
+.seq .nt b{font-weight:500}
+.seq .end{font-size:10px;color:var(--ink-3);letter-spacing:0}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.legend i{display:inline-block;width:16px;height:3px;margin-right:6px;vertical-align:2px}
+.legend i.g1{background:linear-gradient(90deg,var(--m1a),var(--m1b))}
+.legend i.g2{background:linear-gradient(90deg,var(--m2a),var(--m2b))}
 
-  .callout { background: var(--tint); border-left: 3px solid var(--teal); border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 22px 0; max-width: 760px; font-size: 16px; }
-  .callout code, p code, li code, td code { font: 13.5px/1 var(--mono); background: color-mix(in srgb, var(--ink) 7%, transparent); padding: 2px 6px; border-radius: 5px; }
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule-2);border:1px solid var(--rule);border-top:0}
+.facts>div{background:var(--surface);padding:14px 16px}
+.facts b{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;display:block}
+.facts b em{font-style:normal;color:var(--ink-3);font-size:13px;padding:0 4px}
+.facts b .h{color:var(--high)} .facts b .l{color:var(--low)}
+.facts span{font-size:12.5px;color:var(--ink-2);display:block;margin-top:3px}
 
-  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 26px 0; }
-  .tile { background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; padding: 20px 22px; }
-  .tile b { display: block; font: 500 30px/1.1 var(--serif); margin-bottom: 6px; }
-  .tile b small { font: 500 15px/1 var(--sans); color: var(--ink-soft); }
-  .tile > span { font-size: 14.5px; color: var(--ink-soft); line-height: 1.45; display: block; }
-  .hi-c { color: var(--high); } .lo-c { color: var(--low); }
-  @media (max-width: 760px) { .tiles { grid-template-columns: 1fr; } }
-
-  figure.fig { margin: 30px 0; }
-  figure.fig a { display: block; background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 16px; }
-  figure.fig img { width: 100%; height: auto; display: block; }
-  figure.fig figcaption { font-size: 14.5px; color: var(--ink-soft); margin-top: 12px; max-width: 800px; line-height: 1.5; }
-  figure.fig figcaption b { color: var(--ink); }
-  .two { display: grid; grid-template-columns: 1fr; gap: 4px; max-width: 900px; }
-  .two figure.fig { margin: 14px 0; }
-  .narrow { max-width: 640px; }
-  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
-
-  .tablewrap { overflow-x: auto; margin: 22px 0; }
-  table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
-  th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  th { font: 600 12.5px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); background: color-mix(in srgb, var(--ink) 3%, var(--panel)); }
-  tr:last-child td { border-bottom: 0; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-  .caveats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
-  .caveats div { background: var(--panel); border: 1px solid var(--rule); border-radius: 14px; padding: 18px 20px; font-size: 15.5px; line-height: 1.55; }
-  .caveats b { display: block; margin-bottom: 4px; }
-  @media (max-width: 760px) { .caveats { grid-template-columns: 1fr; } }
-
-  pre { background: #10181a; color: #dfe9e8; border-radius: 12px; padding: 18px 20px; overflow-x: auto; font: 13.5px/1.6 var(--mono); margin: 18px 0; }
-  pre .c { color: #7f9a9a; }
-  .nb { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 24px; padding: 0; margin: 18px 0 0; }
-  .nb li { list-style: none; font-size: 15px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
-  .nb li span { color: var(--ink-soft); }
-  @media (max-width: 760px) { .nb { grid-template-columns: 1fr; } }
-
-  footer { border-top: 1px solid var(--rule); padding: 36px 0 60px; font-size: 14px; color: var(--ink-soft); }
-  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+@media (max-width:620px){section>.wrap{padding-block:30px}.ctrls button{padding:11px 12px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<header class="bar">
-  <div class="wrap">
-    <a class="brand" href="#top">
-      <span class="dots"><i style="background:#1f9e96"></i><i style="background:#f2c14e"></i><i style="background:#e4572e"></i></span>
-      TF motif syntax × AlphaFold 3
-    </a>
-    <nav>
-      <a href="#approach">Approach</a>
-      <a href="#screen">Screen</a>
-      <a href="#lef1">RUNX1–LEF1</a>
-      <a href="#ets1">RUNX1–ETS1</a>
-      <a href="#caveats">Caveats</a>
-      <a class="keep" href="https://github.com/izu0421/thy_tf_dna">GitHub ↗</a>
-    </nav>
+
+<header class="mast"><div class="wrap">
+  <h1>Same motifs, different arrangement</h1>
+  <p>Two transcription factors on DNA, predicted with AlphaFold&nbsp;3. High- and low-syntax arrangement side by side.</p>
+  <div class="strip">
+    <div><b>6,400</b><span>models</span></div>
+    <div><b>32</b><span>TF pairs</span></div>
+    <div><b>100</b><span>backgrounds each</span></div>
+    <div><a href="https://github.com/izu0421/thy_tf_dna">github.com/izu0421/thy_tf_dna</a></div>
   </div>
-</header>
+</div></header>
 
-<main id="top">
-
-<div class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">AlphaFold 3 screen · work in progress</p>
-      <h1>Does motif arrangement change how two transcription factors touch?</h1>
-      <p class="lede">We modelled 6,400 complexes of two transcription factors on DNA. Each pair was placed on the same two motifs in a favourable ("high syntax") and an unfavourable ("low syntax") arrangement, and we asked whether the proteins contact each other differently.</p>
-      <div class="cta">
-        <a class="btn primary" href="#screen">See the results</a>
-        <a class="btn" href="https://github.com/izu0421/thy_tf_dna">Code and data</a>
-      </div>
+<section><div class="wrap">
+  <span class="eyebrow">RUNX1 · LEF1</span>
+  <h2>A contact that is on or off</h2>
+  <div class="shell" id="lef1">
+    <div class="duo">
+      <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+      <div class="pane" data-c="low"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
     </div>
-    <div class="pairfig">
-      <figure>
-        <img src="assets/hero_high.png" alt="AlphaFold 3 model of RUNX1 and ETS1 on a high-syntax DNA sequence, with two contact patches marked on RUNX1">
-        <figcaption class="hi">High syntax</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/hero_low.png" alt="AlphaFold 3 model of RUNX1 and ETS1 on a low-syntax DNA sequence, with one contact patch marked on RUNX1">
-        <figcaption class="lo">Low syntax</figcaption>
-      </figure>
-      <div class="seq"><span class="g">TT</span><span class="m2">CAGGAAGT</span><span class="m1">TGTGGTT</span><span class="g">TT</span></div>
-      <div class="seq"><span class="g">TA</span><span class="m1">TGTGGTT</span><span class="m2">CAGGAAGT</span><span class="g">TG</span></div>
-      <p>RUNX1 (teal) and ETS1 (yellow) on DNA (grey). The same two motifs, <span class="m1">RUNX</span> and <span class="m2">ETS</span>, in swapped order. Orange mesh marks where ETS1 touches RUNX1; the upper contact appears only in the high-syntax arrangement.</p>
+    <div class="ctrls">
+      <button data-v="complex" aria-pressed="true">complex</button>
+      <button data-v="footprint" aria-pressed="false">footprint</button>
+      <div class="sp"></div>
+      <button data-a="spin" aria-pressed="true">spin</button>
+      <button data-a="reset" aria-pressed="false">recentre</button>
     </div>
+    <div class="legendrow"><div class="legend">
+        <span><i style="background:var(--tf1)"></i>RUNX1</span>
+        <span><i style="background:var(--tf2)"></i>LEF1</span>
+        <span><i style="background:var(--contact)"></i>contact</span>
+        <span><i class="g1"></i>RUNX motif</span>
+        <span><i class="g2"></i>LEF1 motif</span>
+    </div></div>
   </div>
-  <div class="wrap">
-    <div class="stats">
-      <div><b>6,400</b><span>AlphaFold 3 models</span></div>
-      <div><b>32</b><span>TF pairs, from 23 transcription factors</span></div>
-      <div><b>2</b><span>arrangements per pair: high and low syntax</span></div>
-      <div><b>100</b><span>flanking-sequence backgrounds per arrangement</span></div>
-    </div>
+  <div class="facts">
+    <div><b><span class="h">125</span><em>vs</em><span class="l">0</span> Å²</b><span>mean domain contact area</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">0%</span></b><span>of models with the domains touching</span></div>
+    <div><b>100 / 100</b><span>backgrounds where high beats low</span></div>
   </div>
-</div>
+</div></section>
 
-<section id="approach">
-  <div class="wrap">
-    <p class="kicker">Approach</p>
-    <h2>Same proteins, same motifs, different arrangement</h2>
-    <div class="prose">
-      <p>Transcription factors often bind DNA in pairs, and the order, orientation and spacing of their two motifs (the motif "syntax") can decide whether a sequence is active. One explanation is structural: only some arrangements let the two proteins contact each other on the DNA.</p>
-      <p>To test this, each TF pair was modelled on short double-stranded DNA carrying its two motifs in a high-scoring and a low-scoring arrangement, as ranked with <a href="https://github.com/jmschrei/tangermeme">tangermeme</a>. Each arrangement was embedded in 100 different flanking sequences, so every high model has a matched low model with the same background.</p>
+<section><div class="wrap">
+  <span class="eyebrow">RUNX1 · ETS1</span>
+  <h2>The crystal-structure contact, only in high</h2>
+  <div class="shell" id="ets1">
+    <div class="duo">
+      <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+      <div class="pane" data-c="low"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
     </div>
-    <ol class="steps">
-      <li><b>Pick sequences</b>32 TF pairs × high / low syntax × 100 backgrounds.</li>
-      <li><b>Predict structures</b>Full-length TF1 + TF2 + DNA duplex with AlphaFold 3, one model per sequence.</li>
-      <li><b>Measure contact</b>Protein–protein buried surface area (BSA), full length and structured domains only.</li>
-      <li><b>Compare pairs</b>Paired Wilcoxon test per TF pair, matched by background, with FDR correction across the 32 pairs.</li>
-    </ol>
-    <div class="callout">
-      <b>Buried surface area.</b> BSA = ½ · (SASA<sub>TF1</sub> + SASA<sub>TF2</sub> − SASA<sub>TF1+TF2</sub>), with the DNA left out, so it counts only surface hidden by the other protein. "Domains only" restricts both proteins to curated UniProt/Pfam structured domains, which removes contacts made by disordered tails.
+    <div class="ctrls">
+      <button data-v="complex" aria-pressed="true">complex</button>
+      <button data-v="footprint" aria-pressed="false">footprint</button>
+      <div class="sp"></div>
+      <button data-a="spin" aria-pressed="true">spin</button>
+      <button data-a="reset" aria-pressed="false">recentre</button>
     </div>
+    <div class="legendrow"><div class="legend">
+        <span><i style="background:var(--tf1)"></i>RUNX1</span>
+        <span><i style="background:var(--tf2)"></i>ETS1</span>
+        <span><i style="background:var(--contact)"></i>contact</span>
+        <span><i class="g1"></i>RUNX motif</span>
+        <span><i class="g2"></i>ETS motif</span>
+    </div></div>
   </div>
-</section>
-
-<section id="screen">
-  <div class="wrap">
-    <p class="kicker">Result 1 · the whole screen</p>
-    <h2>High syntax buries more protein surface overall, but not for every pair</h2>
-    <div class="prose">
-      <p>Across all models, the high-syntax arrangement gives a larger protein–protein interface. Pair by pair the picture is mixed: half of the pairs follow the expectation, and a quarter go the other way.</p>
-    </div>
-    <div class="tiles">
-      <div class="tile"><b>16 <small>of 32 pairs</small></b><span>have significantly more domain-level contact in <span class="hi-c">high</span> than <span class="lo-c">low</span>. Eight are reversed and eight show no difference.</span></div>
-      <div class="tile"><b>373 <small>vs</small> 227 Å²</b><span>median domain-only BSA, <span class="hi-c">high</span> vs <span class="lo-c">low</span>, over all 6,400 models.</span></div>
-      <div class="tile"><b>88% <small>vs</small> 71%</b><span>of models have the two TFs' structured domains touching at all, <span class="hi-c">high</span> vs <span class="lo-c">low</span>.</span></div>
-    </div>
-
-    <figure class="fig">
-      <a href="assets/domain_bsa_n100_rho0.6_high_vs_low.png"><img src="assets/domain_bsa_n100_rho0.6_high_vs_low.png" alt="Bar charts per TF pair: fraction of models with domain contact and mean domain buried surface area, high versus low syntax"></a>
-      <figcaption><b>Structured domains only, per TF pair.</b> Top: fraction of models in which the two TFs' domains touch. Bottom: mean domain–domain BSA (± SD). Pairs are sorted from the largest high-over-low difference (left) to the most reversed (right); asterisks mark pairs significant at 5% FDR.</figcaption>
-    </figure>
-
-    <figure class="fig">
-      <a href="assets/bsa_n100_rho0.6_high_vs_low.png"><img src="assets/bsa_n100_rho0.6_high_vs_low.png" alt="Box plot of full-length buried surface area for high and low syntax, and bar chart of mean buried surface area per TF pair"></a>
-      <figcaption><b>Full-length proteins.</b> Left: all models. Right: mean BSA per TF pair. Full-length values are several-fold larger than the domain-only ones because disordered regions contribute a large share of the contact, and AlphaFold 3 places those with low confidence.</figcaption>
-    </figure>
-
-    <div class="prose">
-      <p>The cleanest cases are on/off. For RUNX1–LEF1, RUNX1–TCF7 and RUNX2–LEF1, the domains touch in every high-syntax model and in none of the low-syntax ones.</p>
-    </div>
+  <div class="facts">
+    <div><b><span class="h">853</span><em>vs</em><span class="l">438</span> Å²</b><span>mean contact area in the regions shown</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">8%</span></b><span>of models where RUNX1 191–205 reaches the ETS domain end</span></div>
+    <div><b>PDB 4L0Z</b><span>same RUNX1 residues make the contact in the crystal</span></div>
   </div>
-</section>
+</div></section>
 
-<section id="lef1">
-  <div class="wrap">
-    <p class="kicker">Result 2 · an on/off pair</p>
-    <h2>RUNX1–LEF1: a small contact that exists only in the high arrangement</h2>
-    <div class="prose">
-      <p>In the high-syntax arrangement the end of a LEF1 HMG-box helix rests against one face of the RUNX1 Runt domain. In the low-syntax arrangement both proteins still sit on their motifs, but LEF1 is turned away and the domains do not meet.</p>
-    </div>
-    <div class="tiles">
-      <div class="tile"><b>125 <small>vs</small> 0 Å²</b><span>mean domain BSA, <span class="hi-c">high</span> vs <span class="lo-c">low</span>.</span></div>
-      <div class="tile"><b>100 <small>of 100</small></b><span>backgrounds have more domain contact in high than in the matched low model.</span></div>
-      <div class="tile"><b>100% <small>vs</small> 0%</b><span>of models with the Runt and HMG-box domains touching.</span></div>
-    </div>
-    <div class="two">
-      <figure class="fig">
-        <a href="assets/representative_RUNX1_LEF1_domains_interface.png"><img src="assets/representative_RUNX1_LEF1_domains_interface.png" alt="RUNX1 and LEF1 domains on DNA in a high and a low syntax model, with a mesh patch on RUNX1 in the high model only"></a>
-        <figcaption><b>Side view.</b> Mesh: RUNX1 surface in contact with LEF1. Present in high, absent in low.</figcaption>
-      </figure>
-      <figure class="fig">
-        <a href="assets/representative_RUNX1_LEF1_domains_footprint.png"><img src="assets/representative_RUNX1_LEF1_domains_footprint.png" alt="Surface of the RUNX1 Runt domain with the LEF1 footprint painted on it in the high model and no footprint in the low model"></a>
-        <figcaption><b>Footprint view.</b> Looking at the Runt-domain face that LEF1 lands on; LEF1 is the see-through cartoon in front. Nucleotides and the sequence under each panel are coloured by motif: RUNX motif teal, LEF1 motif amber.</figcaption>
-      </figure>
-    </div>
-    <figure class="fig narrow">
-      <a href="assets/representative_RUNX1_LEF1_domain_bsa.png"><img src="assets/representative_RUNX1_LEF1_domain_bsa.png" alt="Paired dot plots of RUNX1–LEF1 buried surface area for high and low syntax, domains only and full length"></a>
-      <figcaption><b>All 100 backgrounds.</b> Grey lines join the high and low model of the same background; stars mark the two models drawn above.</figcaption>
-    </figure>
-  </div>
-</section>
+<footer><div class="wrap">
+  <span>AlphaFold 3 predictions · unpublished work in progress · light → dark = 5′ → 3′ of each motif</span>
+  <span>drag to rotate · scroll to zoom · both views move together · <a href="overview.html">full write-up</a></span>
+</div></footer>
 
-<section id="ets1">
-  <div class="wrap">
-    <p class="kicker">Result 3 · a known interface</p>
-    <h2>RUNX1–ETS1: the syntax-dependent contact sits just outside the annotated domains</h2>
-    <div class="prose">
-      <p>With curated domain boundaries, RUNX1–ETS1 looked almost identical in high and low (a difference of 12 Å²), while the full-length proteins differed by more than 500 Å². Splitting the buried surface by region showed where the difference comes from: a short RUNX1 segment directly after the Runt domain (about residues 191–205) packs against the regions flanking the ETS1 ETS domain, and it does so only in the high-syntax arrangement.</p>
-      <p>The same RUNX1 segment makes the RUNX1–ETS1 contact in the crystal structure of the two proteins on DNA (PDB <a href="https://www.rcsb.org/structure/4L0Z">4L0Z</a>, Shrivastava et al., 2014).</p>
-    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
+<script>
+(function(){
+"use strict";
+const META={"lef1":{"high":{"file":"s/lef1_high.pdb","bg":26,"seq":"TTCTTTGATGTGGTTTA","motifs":[{"k":"m1","start":9,"len":7,"fwd":true},{"k":"m2","start":3,"len":6,"fwd":false}],"foot":[84,119,132,133],"n":17},"low":{"file":"s/lef1_low.pdb","bg":45,"seq":"TCTCAAAGTGTGGTTTG","motifs":[{"k":"m1","start":9,"len":7,"fwd":true},{"k":"m2","start":3,"len":6,"fwd":true}],"foot":[],"n":17}},"ets1":{"high":{"file":"s/ets1_high.pdb","bg":16,"seq":"TTCAGGAAGTTGTGGTTTT","motifs":[{"k":"m1","start":11,"len":7,"fwd":true},{"k":"m2","start":3,"len":8,"fwd":true}],"foot":[99,100,102,104,106,116,119,120,121,123,132,189,192,193,194,197,198,201,202,205],"n":19},"low":{"file":"s/ets1_low.pdb","bg":16,"seq":"TATGTGGTTCAGGAAGTTG","motifs":[{"k":"m1","start":3,"len":7,"fwd":true},{"k":"m2","start":10,"len":8,"fwd":true}],"foot":[99,100,102,104,116,119,120,121,122,123,130,132],"n":19}}};
 
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th></th><th>RUNX1 residues touching ETS1</th><th>ETS1 residues touching RUNX1</th></tr></thead>
-        <tbody>
-          <tr><td><b>Crystal structure 4L0Z</b></td><td>194, 197, 198, 201, 202, 206</td><td>334–343 and 422–432</td></tr>
-          <tr><td><b>High-syntax models</b><br><span class="muted">in at least 30% of models</span></td><td>194, 195, 197, 198, 201, 202, 205</td><td>304, 326–330, 338, 399–400, 416–421</td></tr>
-        </tbody>
-      </table>
-    </div>
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const hex = h => [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix = (a,b,t) => { const x=hex(a), y=hex(b); return "#"+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,"0")).join(""); };
 
-    <div class="prose">
-      <p>The RUNX1 side matches the crystal closely. On the ETS1 side the models place the segment on the same flanks of the ETS domain, shifted by a few residues. When the regions are widened to include this interface (RUNX1 50–212; ETS1 PNT domain plus ETS domain with flanks, 301–441), the pair becomes a clear high-versus-low contrast.</p>
-    </div>
+/* colour of each chain-C position: gradient light -> dark along the motif, 5' -> 3' as the motif is written */
+function shades(m){
+  const out={};
+  m.motifs.forEach(mo=>{
+    const a=css(mo.k==="m1"?"--m1a":"--m2a"), b=css(mo.k==="m1"?"--m1b":"--m2b");
+    for(let j=0;j<mo.len;j++){ const t=j/(mo.len-1); out[mo.start+j]=mix(a,b,mo.fwd?t:1-t); }
+  });
+  return out;
+}
 
-    <div class="tiles">
-      <div class="tile"><b>853 <small>vs</small> 438 Å²</b><span>mean BSA in these regions, <span class="hi-c">high</span> vs <span class="lo-c">low</span>. High is larger in all 100 backgrounds.</span></div>
-      <div class="tile"><b>100% <small>vs</small> 8%</b><span>of models in which the RUNX1 segment touches the ETS-domain end of ETS1.</span></div>
-      <div class="tile"><b>~440 Å²</b><span>is shared by both arrangements: the ETS1 PNT domain docks on the Runt domain regardless of syntax.</span></div>
-    </div>
+function setup(key){
+  const root=document.getElementById(key);
+  const pane={}; root.querySelectorAll(".pane").forEach(p=>pane[p.dataset.c]={el:p,V:null,ids:{}});
+  let view="complex", home=null, last=null, ready=false;
+  let spin=!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  root.querySelector('button[data-a="spin"]').setAttribute("aria-pressed",String(spin));
 
-    <div class="two">
-      <figure class="fig">
-        <a href="assets/representative_RUNX1_ETS1_domains_interface.png"><img src="assets/representative_RUNX1_ETS1_domains_interface.png" alt="RUNX1 and ETS1 on DNA in a high and a low syntax model; two mesh patches on RUNX1 in high, one in low"></a>
-        <figcaption><b>Side view.</b> High has two contacts: the PNT domain on the Runt domain (below the DNA) and the RUNX1 segment against the ETS-domain end (above). Low keeps only the first; the RUNX1 segment sticks up as a free helix. The sequence under each panel is the modelled DNA with the RUNX motif in teal and the ETS motif in amber.</figcaption>
-      </figure>
-      <figure class="fig">
-        <a href="assets/representative_RUNX1_ETS1_domains_footprint.png"><img src="assets/representative_RUNX1_ETS1_domains_footprint.png" alt="RUNX1 drawn as a surface with the ETS1 footprint painted on it; two footprints in the high model and one in the low model"></a>
-        <figcaption><b>Footprint view.</b> RUNX1 as a surface with the ETS1 footprint in orange. DNA nucleotides are sticks, coloured by motif: RUNX motif teal, ETS motif amber.</figcaption>
-      </figure>
-    </div>
-    <figure class="fig narrow">
-      <a href="assets/representative_RUNX1_ETS1_domain_bsa.png"><img src="assets/representative_RUNX1_ETS1_domain_bsa.png" alt="Paired dot plots of RUNX1–ETS1 buried surface area for high and low syntax, in the interface regions and full length"></a>
-      <figcaption><b>All 100 backgrounds.</b> Left: the regions drawn above (single paired Wilcoxon test for this pair). Right: full-length proteins. The models shown are the high/low pair from the background with the median difference.</figcaption>
-    </figure>
-  </div>
-</section>
+  function drawSeq(cls){
+    const m=META[key][cls], sh=shades(m), p=pane[cls].el;
+    p.querySelector(".nt").innerHTML='<span class="end">5′ </span>'+m.seq.split("").map((c,i)=>
+      sh[i+1]?'<b style="color:'+sh[i+1]+'">'+c+'</b>':c).join("")+'<span class="end"> 3′</span>';
+    const badge=p.querySelector(".badge"); badge.className="badge "+cls;
+    badge.innerHTML="<b>"+cls+" syntax</b> <span>· background "+m.bg+"</span>";
+  }
 
-<section id="caveats">
-  <div class="wrap">
-    <p class="kicker">Read with care</p>
-    <h2>What these models can and cannot tell us</h2>
-    <div class="caveats">
-      <div><b>These are predictions.</b>Every structure is an AlphaFold 3 model. Nothing here has been tested experimentally, apart from the comparison with the 4L0Z crystal structure.</div>
-      <div><b>Interface confidence is modest.</b>The median TF–TF ipTM is about 0.34 in both classes. The DNA-binding domains themselves are confidently folded and placed on their motifs.</div>
-      <div><b>Disordered regions inflate full-length BSA.</b>Much of the full-length contact comes from low-confidence tails. That is why the domain-level analysis is reported alongside it.</div>
-      <div><b>Domain boundaries matter.</b>For RUNX1–ETS1 the regions were widened after seeing where the difference was, guided by the crystal structure. The screen-wide statistics use the curated domains only.</div>
-      <div><b>The PNT contact is uncertain.</b>The ETS1 PNT domain docks on the Runt domain in every model, but with a predicted aligned error of about 20 Å, and it is not part of the crystallised construct.</div>
-      <div><b>The effect is not universal.</b>Eight of 32 pairs show more domain contact in the low-syntax arrangement. Motif syntax and predicted protein contact do not always agree.</div>
-    </div>
-  </div>
-</section>
+  function render(cls){
+    const m=META[key][cls], V=pane[cls].V, id=pane[cls].ids[cls];
+    const sh=shades(m), dna=css("--dna"), tf1=css("--tf1"), tf2=css("--tf2"), con=css("--contact");
+    const ntCol=a=>{ const i=a.chain==="C"?a.resi:m.n+1-a.resi; return sh[i]||dna; };
+    V.removeAllSurfaces(); V.setStyle({},{});
+    const A={model:id,chain:"A"}, B={model:id,chain:"B"}, D={model:id,chain:["C","D"]};
+    const F=m.foot.length?{model:id,chain:"A",resi:m.foot}:null;
+    V.setStyle(D,{cartoon:{colorfunc:ntCol,thickness:.3},stick:{colorfunc:ntCol,radius:.16}});
+    if(view==="complex"){
+      V.setStyle(A,{cartoon:{color:tf1,thickness:.4}});
+      V.setStyle(B,{cartoon:{color:tf2,thickness:.4}});
+      if(F) V.addSurface($3Dmol.SurfaceType.MS,{color:con,opacity:.82},F,A);
+    } else {
+      V.setStyle(B,{cartoon:{color:tf2,thickness:.3,opacity:.45}});
+      V.addSurface($3Dmol.SurfaceType.MS,{color:css("--tf1-soft"),opacity:1},
+        F?{model:id,chain:"A",not:{resi:m.foot}}:A,A);
+      if(F) V.addSurface($3Dmol.SurfaceType.MS,{color:con,opacity:1},F,A);
+    }
+    V.render();
+  }
 
-<section id="repo">
-  <div class="wrap">
-    <p class="kicker">Reproduce</p>
-    <h2>Code, tables and figures</h2>
-    <div class="prose">
-      <p>The <a href="https://github.com/izu0421/thy_tf_dna">repository</a> holds the SLURM pipeline, the analysis notebooks, the input sequence table, the result tables and the PDF figures. The 6,400 model files are too large for git and are kept on the cluster.</p>
-    </div>
-<pre><span class="c"># structures (HPC): edit paths and SLURM account in config.sh, then</span>
-cd af3_screen_n100_rho0.6 &amp;&amp; ./submit_all.sh
+  /* one shared camera: whichever viewer moved last is copied to the other; spin turns both */
+  const differ=(u,v)=>u.some((x,i)=>Math.abs(x-v[i])>1e-4);
+  function tick(){
+    const H=pane.high.V, L=pane.low.V;
+    if(spin) H.rotate(0.35,"y");
+    const a=H.getView(), b=L.getView();
+    if(differ(a,last)){ L.setView(a); last=a; }
+    else if(differ(b,last)){ H.setView(b); last=b; }
+    requestAnimationFrame(tick);
+  }
 
-<span class="c"># domain annotations and domain-only BSA</span>
-python scripts/fetch_tf_domains.py
-sbatch scripts/domain_bsa.sbatch
+  (async function(){
+    drawSeq("high"); drawSeq("low");
+    const fail=t=>root.querySelectorAll(".vpnote").forEach(n=>n.textContent=t);
+    let txt;
+    try{
+      txt=await Promise.all(["high","low"].map(async c=>{ const r=await fetch(META[key][c].file); if(!r.ok) throw 0; return r.text(); }));
+    }catch(e){ fail("structure unavailable"); return; }
+    try{
+      for(const c of ["high","low"]){
+        const V=$3Dmol.createViewer(pane[c].el.querySelector(".vp"),{backgroundAlpha:0,antialias:true});
+        /* both models go into both viewers so that the two share one frame; each shows its own */
+        pane[c].ids.high=V.addModel(txt[0],"pdb").getID();
+        pane[c].ids.low=V.addModel(txt[1],"pdb").getID();
+        pane[c].V=V;
+      }
+    }catch(e){ fail("3D viewer unavailable"); return; }
+    root.querySelectorAll(".vpnote").forEach(n=>n.remove());
+    pane.high.V.zoomTo(); pane.high.V.zoom(1.05); home=pane.high.V.getView();
+    pane.low.V.setView(home); last=home;
+    render("high"); render("low"); ready=true;
+    requestAnimationFrame(tick);
+  })();
 
-<span class="c"># analysis: run the notebooks in notebooks/ in numerical order</span></pre>
-    <ul class="nb">
-      <li><b>0</b> &nbsp;Protein–protein BSA and ipTM <span>· full length</span></li>
-      <li><b>1–2</b> &nbsp;Protein–DNA interface and contacts</li>
-      <li><b>3</b> &nbsp;Inter-chain PAE</li>
-      <li><b>4, 4b</b> &nbsp;Representative structures <span>· RUNX1–LEF1, RUNX1–ETS1</span></li>
-      <li><b>6</b> &nbsp;RUNX1–ETS1 against the 4L0Z crystal structure</li>
-      <li><b>7</b> &nbsp;Domain-only BSA <span>· the screen-wide result above</span></li>
-    </ul>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <div class="wrap">
-    <span>Unpublished work in progress. Structures predicted with AlphaFold 3; rendered with PyMOL.</span>
-    <a href="https://github.com/izu0421/thy_tf_dna">github.com/izu0421/thy_tf_dna</a>
-  </div>
-</footer>
+  root.querySelector(".ctrls").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b||!ready) return;
+    if(b.dataset.v){ view=b.dataset.v; root.querySelectorAll("button[data-v]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.v===view))); render("high"); render("low"); }
+    else if(b.dataset.a==="spin"){ spin=!spin; b.setAttribute("aria-pressed",String(spin)); }
+    else { pane.high.V.setView(home); pane.low.V.setView(home); last=home; }
+  });
+}
+setup("lef1"); setup("ets1");
+})();
+</script>
 
 </body>
 </html>
