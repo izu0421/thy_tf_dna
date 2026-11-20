@@ -73,8 +73,10 @@ IDR_NOTE = {"none": "", "linkers": "linker between a TF's domains: lighter tint"
 # structure colours in the style of Baker-lab figures (teal / yellow complex partners, grey context;
 # e.g. Vazquez Torres et al. Nature 2023, Cao et al. Nature 2022)
 COL = {"TF1": "#1f9e96", "TF2": "#f2c14e", "DNA": "#d0d0d0", "IFACE": "#e4572e",
+       "MOTIF1": "#0f766e", "MOTIF2": "#b7791f",  # each TF's motif on the DNA: darker shade of that TF's colour
        "IDR1": "#a6dbd6", "IDR2": "#fae6b0"}  # residues outside the annotated domains (only if SHOW_IDR)
-COL_NAME = {"TF1": "teal", "TF2": "yellow", "DNA": "light grey", "IFACE": "orange-red"}
+COL_NAME = {"TF1": "teal", "TF2": "yellow", "DNA": "light grey", "IFACE": "orange-red",
+            "MOTIF1": "dark teal", "MOTIF2": "dark amber"}
 
 def yy_pymol_colours(cmd):
     for k, hexcol in COL.items():
@@ -149,7 +151,42 @@ if DOMAIN_OVERRIDE:
     display(bsa.groupby(["group", "class"])[["BSA", "BSA_domain", "domains_touch"]].agg(["median", "mean"]).round(2))
 domains[domains["TF"].isin(tfs)]''',
 
-r'''def yy_resi(tf):
+r'''# each TF's motif in the modelled DNA (chain C = 'sequence' 5'->3', chain D = its reverse complement)
+seqs = pd.read_csv("../data/tangermeme_hard_syntax_top_and_worst_motif_examples_n100_rho0.6.csv", dtype={"motif_combination": str})
+seqs["name"] = (seqs["TF1"] + "_" + seqs["TF2"] + "_" + seqs["motif_combination"] + "_" + seqs["class"]
+                + "_bg" + seqs["background_idx"].astype(str))
+seqs = seqs.set_index("name")
+
+def yy_motif_pos(name):
+    """{'MOTIF1': (start, end), 'MOTIF2': (start, end)}: 1-based position of each TF's motif on chain C
+    (motif searched on either strand; None if it is not found as an exact match)."""
+    r = seqs.loc[name]
+    rc = lambda x: x[::-1].translate(str.maketrans("ACGT", "TGCA"))
+    pos = {}
+    for k, motif in [("MOTIF1", r["motif1"]), ("MOTIF2", r["motif2"])]:
+        i = max(r["sequence"].find(motif), r["sequence"].find(rc(motif)))
+        pos[k] = (i + 1, i + len(motif)) if i >= 0 else None
+    return pos
+
+def yy_colour_motifs(cmd, obj, name):
+    """colour the nucleotides of each TF's motif (both strands) in a darker shade of that TF's colour"""
+    n = len(seqs.loc[name, "sequence"])
+    for k, se in yy_motif_pos(name).items():
+        if se is not None:
+            cmd.color(f"yy_{k}", f"{obj} and ((chain C and resi {se[0]}-{se[1]}) or (chain D and resi {n + 1 - se[1]}-{n + 1 - se[0]}))")
+
+def yy_draw_sequence(ax, name, y=-0.03, dx=0.03, fontsize=10):
+    """write the modelled DNA (chain C, 5'->3') under a panel, with each TF's motif in its motif colour"""
+    seq, pos = seqs.loc[name, "sequence"], yy_motif_pos(name)
+    x0 = 0.5 - dx * (len(seq) - 1) / 2
+    ax.text(x0 - 1.2 * dx, y, "5'", transform=ax.transAxes, ha="right", va="top", fontsize=fontsize - 2, color="0.5")
+    ax.text(x0 + dx * len(seq) + 0.2 * dx, y, "3'", transform=ax.transAxes, ha="left", va="top", fontsize=fontsize - 2, color="0.5")
+    for i, nt in enumerate(seq, start=1):
+        key = next((k for k, se in pos.items() if se is not None and se[0] <= i <= se[1]), None)
+        ax.text(x0 + dx * (i - 1), y, nt, transform=ax.transAxes, ha="center", va="top", fontsize=fontsize,
+                family="DejaVu Sans Mono", color=COL[key] if key else "0.6", fontweight="bold" if key else "normal")
+
+def yy_resi(tf):
     """PyMOL resi selection for a TF's structured domains, e.g. '50-179' or '51-136+335-415'."""
     d = domains[domains["TF"] == tf]
     return "+".join(f"{s}-{e}" for s, e in zip(d["start"], d["end"]))
@@ -443,15 +480,17 @@ for ax, cls in zip(axes, ["high", "low"]):
     ax.imshow(mpimg.imread(f"../results/figures/representative_structures/{rep}_{TAG}_interface_mesh.png"))
     ax.axis("off")
     ax.set_title(f"{cls} syntax (bg{rep.split('_bg')[1]})\ndomain BSA = {dom_bsa[rep]:.0f} Å$^2$", fontsize=11)
+    yy_draw_sequence(ax, rep)
 fig.suptitle(f"{tf1}–{tf2} interface", fontsize=12)
 fig.text(0.5, 0.01,
          f"{tf1} {yy_domain_label(tf1)} ({COL_NAME['TF1']}) · {tf2} {yy_domain_label(tf2)} ({COL_NAME['TF2']}) · "
          f"DNA ({COL_NAME['DNA']})"
          + (" · " + IDR_NOTE if IDR_NOTE else "") +
          f"\nmesh ({COL_NAME['IFACE']}) = {tf1} surface in contact with {tf2} (residues with an atom within 4.5 Å); "
-         f"low superposed on high via {tf1}",
+         f"low superposed on high via {tf1}\n"
+         f"sequence = modelled DNA (top strand): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}",
          ha="center", va="bottom", fontsize=8)
-plt.tight_layout(rect=(0, 0.07, 1, 0.97))
+plt.tight_layout(rect=(0, 0.11, 1, 0.97))
 plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_interface.pdf", bbox_inches='tight')
 plt.show()
 plt.close()''',
@@ -481,6 +520,7 @@ def yy_render_footprint(group, width=1400, height=1300, contact_cut=4.5, tf2_tra
         cmd.show("cartoon", f"{cls} and chain C+D")
         cmd.show("sticks", f"{cls} and chain C+D and not elem H")  # nucleotides
         cmd.color("yy_DNA", f"{cls} and chain C+D")
+        yy_colour_motifs(cmd, cls, reps[(group, cls)])
         # TF1 surface from its own object (TF2/DNA do not shape it); footprint residues in the interface colour
         cmd.create(f"surf_{cls}", dom_a)
         cmd.show_as("surface", f"surf_{cls}")
@@ -531,13 +571,15 @@ for ax, cls in zip(axes, ["high", "low"]):
     ax.imshow(mpimg.imread(f"../results/figures/representative_structures/{rep}_{TAG}_footprint.png"))
     ax.axis("off")
     ax.set_title(f"{cls} syntax (bg{rep.split('_bg')[1]})\ndomain BSA = {dom_bsa[rep]:.0f} Å$^2$", fontsize=11)
+    yy_draw_sequence(ax, rep)
 fig.suptitle(f"{tf2} footprint on {tf1}", fontsize=12)
 fig.text(0.5, 0.01,
          f"{tf1} {yy_domain_label(tf1)}: surface (pale teal), {tf2} footprint in {COL_NAME['IFACE']} "
          f"(residues with an atom within 4.5 Å)\n{tf2} {yy_domain_label(tf2)}: see-through cartoon ({COL_NAME['TF2']}) · "
-         f"DNA with nucleotides as sticks ({COL_NAME['DNA']}) · low superposed on high via {tf1}",
+         f"DNA with nucleotides as sticks ({COL_NAME['DNA']}) · low superposed on high via {tf1}\n"
+         f"motif nucleotides (sticks and sequence): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}",
          ha="center", va="bottom", fontsize=8)
-plt.tight_layout(rect=(0, 0.07, 1, 0.97))
+plt.tight_layout(rect=(0, 0.11, 1, 0.97))
 plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_footprint.pdf", bbox_inches='tight')
 plt.show()
 plt.close()''',
