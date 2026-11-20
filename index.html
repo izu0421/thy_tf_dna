@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AlphaFold 3 models of RUNX1 with LEF1 and ETS1 on high- and low-syntax DNA, side by side in 3D.">
+<title>TF syntax structures</title>
+
+<style>
+/* Layout: one viewer per TF pair, each followed by its DNA read-out and three numbers.
+   Proteins and DNA use different hues: RUNX1 blue, partner lemon yellow, contact orange; motifs on the DNA teal and amber. */
+:root{
+  --bg:#e9eceb; --surface:#fbfcfb; --surface-2:#f0f3f2;
+  --ink:#131a19; --ink-2:#4d5957; --ink-3:#7b8785;
+  --rule:#c8d0ce; --rule-2:#dce2e0;
+  --tf1:#3a82c4; --tf1-soft:#c9dcef; --tf2:#e3cf3c; --contact:#e4572e; --dna:#b9c1bf;
+  --m1a:#9adbd4; --m1b:#0a4f4a; --m2a:#f2cf7a; --m2b:#7a4a03;
+  --high:#2b7fb0; --low:#d5452f;
+  --mono:Arial,Helvetica,sans-serif;
+  --sans:Arial,Helvetica,sans-serif;
+  --cond:Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
+  --rule:#2b3533;--rule-2:#222b29;--tf1:#63a6e6;--tf1-soft:#26405b;--tf2:#efdc55;--contact:#ff7a52;--dna:#59635f;
+  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
+  --rule:#2b3533;--rule-2:#222b29;--tf1:#63a6e6;--tf1-soft:#26405b;--tf2:#efdc55;--contact:#ff7a52;--dna:#59635f;
+  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--cond);font-weight:700;margin:0;line-height:1.08;letter-spacing:-0.02em;text-wrap:balance}
+p{margin:0}
+a{color:var(--tf1);text-decoration:none;border-bottom:1px solid var(--rule)}
+a:hover{border-bottom-color:var(--tf1)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--tf1);outline-offset:2px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+
+.mast{background:var(--surface);border-bottom:1px solid var(--rule)}
+.mast .wrap{padding-block:36px 0}
+.mast h1{font-size:clamp(34px,6.4vw,58px);letter-spacing:-0.035em}
+.mast p{max-width:46ch;color:var(--ink-2);margin-top:8px;font-size:16px}
+.strip{display:flex;flex-wrap:wrap;margin-top:24px;border-top:1px solid var(--rule-2);font-family:var(--mono);font-size:12px}
+.strip>div{padding:12px 22px 12px 0;margin-right:22px;border-right:1px solid var(--rule-2);display:flex;gap:7px;align-items:baseline}
+.strip>div:last-child{border-right:0}
+.strip b{font-weight:500;font-variant-numeric:tabular-nums}
+.strip span{color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;font-size:10px}
+
+section{border-bottom:1px solid var(--rule)}
+section>.wrap{padding-block:40px}
+h2{font-size:clamp(23px,3.2vw,31px);margin:6px 0 18px;max-width:24ch}
+
+.shell{border:1px solid var(--rule);background:var(--surface)}
+.duo{display:grid;grid-template-columns:1fr 1fr}
+.pane{min-width:0;display:flex;flex-direction:column}
+.pane+.pane{border-left:1px solid var(--rule-2)}
+.vp{position:relative;width:100%;height:clamp(300px,52vh,540px)}
+@media (max-width:720px){.duo{grid-template-columns:1fr}.pane+.pane{border-left:0;border-top:1px solid var(--rule-2)}.vp{height:clamp(260px,44vh,400px)}}
+.vp canvas{display:block}
+.vpnote{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.07em;text-transform:uppercase;pointer-events:none}
+.badge{position:absolute;left:14px;top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
+.badge b{font-weight:500}
+.badge.high b{color:var(--high)} .badge.low b{color:var(--low)}
+.badge span{color:var(--ink-3)}
+.ctrls{display:flex;flex-wrap:wrap;border-top:1px solid var(--rule);background:var(--surface-2)}
+.ctrls button{appearance:none;background:none;border:0;border-right:1px solid var(--rule-2);font-family:var(--mono);font-size:11.5px;color:var(--ink-2);padding:12px 16px;cursor:pointer}
+.ctrls button:hover{color:var(--ink);background:var(--surface)}
+.ctrls button[aria-pressed="true"]{color:var(--ink);background:var(--surface);box-shadow:inset 0 2px 0 var(--tf1)}
+.ctrls button[data-c="high"][aria-pressed="true"]{box-shadow:inset 0 2px 0 var(--high)}
+.ctrls button[data-c="low"][aria-pressed="true"]{box-shadow:inset 0 2px 0 var(--low)}
+.ctrls .gap{width:14px;border-right:1px solid var(--rule-2)}
+.ctrls .sp{flex:1}
+
+.seq{padding:10px 14px;border-top:1px solid var(--rule-2);text-align:center;overflow:hidden}
+.seq .nt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(11px,1.5vw,15px);letter-spacing:.14em;white-space:nowrap;color:var(--ink-3)}
+.legendrow{display:flex;padding:10px 16px;border-top:1px solid var(--rule-2)}
+.seq .nt b{font-weight:500}
+.seq .end{font-size:10px;color:var(--ink-3);letter-spacing:0}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.legend i{display:inline-block;width:16px;height:3px;margin-right:6px;vertical-align:2px}
+.legend i.g1{background:linear-gradient(90deg,var(--m1a),var(--m1b))}
+.legend i.g2{background:linear-gradient(90deg,var(--m2a),var(--m2b))}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule-2);border:1px solid var(--rule);border-top:0}
+.facts>div{background:var(--surface);padding:14px 16px}
+.facts b{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;display:block}
+.facts b em{font-style:normal;color:var(--ink-3);font-size:13px;padding:0 4px}
+.facts b .h{color:var(--high)} .facts b .l{color:var(--low)}
+.facts span{font-size:12.5px;color:var(--ink-2);display:block;margin-top:3px}
+
+footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+@media (max-width:620px){section>.wrap{padding-block:30px}.ctrls button{padding:11px 12px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="mast"><div class="wrap">
+  <h1>Same motifs, different arrangement</h1>
+  <p>Two transcription factors on DNA, predicted with AlphaFold&nbsp;3. High- and low-syntax arrangement side by side.</p>
+  <div class="strip">
+    <div><b>6,400</b><span>models</span></div>
+    <div><b>32</b><span>TF pairs</span></div>
+    <div><b>100</b><span>backgrounds each</span></div>
+    <div><a href="https://github.com/izu0421/thy_tf_dna">github.com/izu0421/thy_tf_dna</a></div>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <span class="eyebrow">RUNX1 · LEF1</span>
+  <h2>A contact that is on or off</h2>
+  <div class="shell" id="lef1">
+    <div class="duo">
+      <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+      <div class="pane" data-c="low"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+    </div>
+    <div class="ctrls">
+      <button data-v="complex" aria-pressed="true">complex</button>
+      <button data-v="footprint" aria-pressed="false">footprint</button>
+      <div class="sp"></div>
+      <button data-a="spin" aria-pressed="true">spin</button>
+      <button data-a="reset" aria-pressed="false">recentre</button>
+    </div>
+    <div class="legendrow"><div class="legend">
+        <span><i style="background:var(--tf1)"></i>RUNX1</span>
+        <span><i style="background:var(--tf2)"></i>LEF1</span>
+        <span><i style="background:var(--contact)"></i>contact</span>
+        <span><i class="g1"></i>RUNX motif</span>
+        <span><i class="g2"></i>LEF1 motif</span>
+    </div></div>
+  </div>
+  <div class="facts">
+    <div><b><span class="h">125</span><em>vs</em><span class="l">0</span> Å²</b><span>mean domain contact area</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">0%</span></b><span>of models with the domains touching</span></div>
+    <div><b>100 / 100</b><span>backgrounds where high beats low</span></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <span class="eyebrow">RUNX1 · ETS1</span>
+  <h2>The crystal-structure contact, only in high</h2>
+  <div class="shell" id="ets1">
+    <div class="duo">
+      <div class="pane" data-c="high"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+      <div class="pane" data-c="low"><div class="vp"><div class="vpnote">loading structure</div><div class="badge"></div></div><div class="seq"><span class="nt"></span></div></div>
+    </div>
+    <div class="ctrls">
+      <button data-v="complex" aria-pressed="true">complex</button>
+      <button data-v="footprint" aria-pressed="false">footprint</button>
+      <div class="sp"></div>
+      <button data-a="spin" aria-pressed="true">spin</button>
+      <button data-a="reset" aria-pressed="false">recentre</button>
+    </div>
+    <div class="legendrow"><div class="legend">
+        <span><i style="background:var(--tf1)"></i>RUNX1</span>
+        <span><i style="background:var(--tf2)"></i>ETS1</span>
+        <span><i style="background:var(--contact)"></i>contact</span>
+        <span><i class="g1"></i>RUNX motif</span>
+        <span><i class="g2"></i>ETS motif</span>
+    </div></div>
+  </div>
+  <div class="facts">
+    <div><b><span class="h">853</span><em>vs</em><span class="l">438</span> Å²</b><span>mean contact area in the regions shown</span></div>
+    <div><b><span class="h">100%</span><em>vs</em><span class="l">8%</span></b><span>of models where RUNX1 191–205 reaches the ETS domain end</span></div>
+    <div><b>PDB 4L0Z</b><span>same RUNX1 residues make the contact in the crystal</span></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>AlphaFold 3 predictions · unpublished work in progress · light → dark = 5′ → 3′ of each motif</span>
+  <span>hover to name a residue · drag to rotate · scroll to zoom · both views move together · <a href="docs/overview.html">full write-up</a></span>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
+<script>
+(function(){
+"use strict";
+const META={"lef1":{"high":{"file":"docs/s/lef1_high.pdb","bg":26,"seq":"TTCTTTGATGTGGTTTA","motifs":[{"k":"m1","start":9,"len":7,"fwd":true},{"k":"m2","start":3,"len":6,"fwd":false}],"foot":[84,119,132,133],"n":17},"low":{"file":"docs/s/lef1_low.pdb","bg":45,"seq":"TCTCAAAGTGTGGTTTG","motifs":[{"k":"m1","start":9,"len":7,"fwd":true},{"k":"m2","start":3,"len":6,"fwd":true}],"foot":[],"n":17}},"ets1":{"high":{"file":"docs/s/ets1_high.pdb","bg":16,"seq":"TTCAGGAAGTTGTGGTTTT","motifs":[{"k":"m1","start":11,"len":7,"fwd":true},{"k":"m2","start":3,"len":8,"fwd":true}],"foot":[99,100,102,104,106,116,119,120,121,123,132,189,192,193,194,197,198,201,202,205],"n":19},"low":{"file":"docs/s/ets1_low.pdb","bg":16,"seq":"TATGTGGTTCAGGAAGTTG","motifs":[{"k":"m1","start":3,"len":7,"fwd":true},{"k":"m2","start":10,"len":8,"fwd":true}],"foot":[99,100,102,104,116,119,120,121,122,123,130,132],"n":19}}};
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const hex = h => [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix = (a,b,t) => { const x=hex(a), y=hex(b); return "#"+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,"0")).join(""); };
+
+/* colour of each chain-C position: gradient light -> dark along the motif, 5' -> 3' as the motif is written */
+function shades(m){
+  const out={};
+  m.motifs.forEach(mo=>{
+    const a=css(mo.k==="m1"?"--m1a":"--m2a"), b=css(mo.k==="m1"?"--m1b":"--m2b");
+    for(let j=0;j<mo.len;j++){ const t=j/(mo.len-1); out[mo.start+j]=mix(a,b,mo.fwd?t:1-t); }
+  });
+  return out;
+}
+
+const PARTNER={lef1:"LEF1",ets1:"ETS1"}, MOTIF={lef1:"LEF1",ets1:"ETS"};
+const AA=n=>n.charAt(0)+n.slice(1).toLowerCase();
+
+function setup(key){
+  const root=document.getElementById(key);
+  const pane={}; root.querySelectorAll(".pane").forEach(p=>pane[p.dataset.c]={el:p,V:null,ids:{}});
+  let view="complex", home=null, last=null, ready=false;
+  let spin=!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  root.querySelector('button[data-a="spin"]').setAttribute("aria-pressed",String(spin));
+
+  function drawSeq(cls){
+    const m=META[key][cls], sh=shades(m), p=pane[cls].el;
+    p.querySelector(".nt").innerHTML='<span class="end">5′ </span>'+m.seq.split("").map((c,i)=>
+      sh[i+1]?'<b style="color:'+sh[i+1]+'">'+c+'</b>':c).join("")+'<span class="end"> 3′</span>';
+    const badge=p.querySelector(".badge"); badge.className="badge "+cls;
+    badge.innerHTML="<b>"+cls+" syntax</b> <span>· background "+m.bg+"</span>";
+  }
+
+  function render(cls){
+    const m=META[key][cls], V=pane[cls].V, id=pane[cls].ids[cls];
+    const sh=shades(m), dna=css("--dna"), tf1=css("--tf1"), tf2=css("--tf2"), con=css("--contact");
+    const ntCol=a=>{ const i=a.chain==="C"?a.resi:m.n+1-a.resi; return sh[i]||dna; };
+    V.removeAllSurfaces(); V.removeAllLabels(); V.setStyle({},{});
+    const A={model:id,chain:"A"}, B={model:id,chain:"B"}, D={model:id,chain:["C","D"]};
+    const F=m.foot.length?{model:id,chain:"A",resi:m.foot}:null;
+    V.setStyle(D,{cartoon:{colorfunc:ntCol,thickness:.3},stick:{colorfunc:ntCol,radius:.16}});
+    /* hover: name the amino acid or nucleotide under the pointer */
+    const motifAt={}; m.motifs.forEach(mo=>{ for(let j=0;j<mo.len;j++) motifAt[mo.start+j]=mo.k==="m1"?"RUNX":MOTIF[key]; });
+    const name=a=>{
+      if(a.chain==="A") return "RUNX1 "+AA(a.resn)+a.resi+(m.foot.includes(a.resi)?" · contact":"");
+      if(a.chain==="B") return PARTNER[key]+" "+AA(a.resn)+a.resi;
+      const i=a.chain==="C"?a.resi:m.n+1-a.resi;
+      return a.resn.replace(/^D/,"")+a.resi+(a.chain==="C"?" top":" bottom")+" strand"+(motifAt[i]?" · "+motifAt[i]+" motif":"");
+    };
+    V.setHoverable({},false);
+    V.setHoverable({model:id},true,
+      (a,v)=>{ if(a.hov) return; a.hov=v.addLabel(name(a),{position:a,fontSize:12,font:"Arial",
+        backgroundColor:css("--ink"),backgroundOpacity:.92,fontColor:css("--surface"),borderThickness:0,
+        inFront:true,alignment:"bottomCenter"}); v.render(); },
+      (a,v)=>{ if(!a.hov) return; v.removeLabel(a.hov); delete a.hov; v.render(); });
+    if(view==="complex"){
+      V.setStyle(A,{cartoon:{color:tf1,thickness:.4}});
+      V.setStyle(B,{cartoon:{color:tf2,thickness:.4}});
+      if(F) V.addSurface($3Dmol.SurfaceType.MS,{color:con,opacity:.82},F,A);
+    } else {
+      V.setStyle(A,{cartoon:{color:css("--tf1-soft"),thickness:.3}});  /* hidden under the surface; keeps hover working */
+      V.setStyle(B,{cartoon:{color:tf2,thickness:.3,opacity:.45}});
+      V.addSurface($3Dmol.SurfaceType.MS,{color:css("--tf1-soft"),opacity:1},
+        F?{model:id,chain:"A",not:{resi:m.foot}}:A,A);
+      if(F) V.addSurface($3Dmol.SurfaceType.MS,{color:con,opacity:1},F,A);
+    }
+    V.render();
+  }
+
+  /* one shared camera: whichever viewer moved last is copied to the other; spin turns both */
+  const differ=(u,v)=>u.some((x,i)=>Math.abs(x-v[i])>1e-4);
+  function tick(){
+    const H=pane.high.V, L=pane.low.V;
+    if(spin) H.rotate(0.35,"y");
+    const a=H.getView(), b=L.getView();
+    if(differ(a,last)){ L.setView(a); last=a; }
+    else if(differ(b,last)){ H.setView(b); last=b; }
+    requestAnimationFrame(tick);
+  }
+
+  (async function(){
+    drawSeq("high"); drawSeq("low");
+    const fail=t=>root.querySelectorAll(".vpnote").forEach(n=>n.textContent=t);
+    let txt;
+    try{
+      txt=await Promise.all(["high","low"].map(async c=>{ const r=await fetch(META[key][c].file); if(!r.ok) throw 0; return r.text(); }));
+    }catch(e){ fail("structure unavailable"); return; }
+    try{
+      for(const c of ["high","low"]){
+        const V=$3Dmol.createViewer(pane[c].el.querySelector(".vp"),{backgroundAlpha:0,antialias:true});
+        /* both models go into both viewers so that the two share one frame; each shows its own */
+        pane[c].ids.high=V.addModel(txt[0],"pdb").getID();
+        pane[c].ids.low=V.addModel(txt[1],"pdb").getID();
+        V.setHoverDuration(120);
+        pane[c].V=V;
+      }
+    }catch(e){ fail("3D viewer unavailable"); return; }
+    root.querySelectorAll(".vpnote").forEach(n=>n.remove());
+    pane.high.V.zoomTo(); pane.high.V.zoom(1.05); home=pane.high.V.getView();
+    pane.low.V.setView(home); last=home;
+    render("high"); render("low"); ready=true;
+    requestAnimationFrame(tick);
+  })();
+
+  root.querySelector(".ctrls").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b||!ready) return;
+    if(b.dataset.v){ view=b.dataset.v; root.querySelectorAll("button[data-v]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.v===view))); render("high"); render("low"); }
+    else if(b.dataset.a==="spin"){ spin=!spin; b.setAttribute("aria-pressed",String(spin)); }
+    else { pane.high.V.setView(home); pane.low.V.setView(home); last=home; }
+  });
+}
+setup("lef1"); setup("ets1");
+})();
+</script>
+
+</body>
+</html>
