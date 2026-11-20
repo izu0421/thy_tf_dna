@@ -10,24 +10,18 @@
 /* Layout: one viewer per TF pair, each followed by its DNA read-out and three numbers.
    Proteins and DNA use different hues: RUNX1 blue, partner lemon yellow, contact orange; motifs on the DNA teal and amber. */
 :root{
-  --bg:#e9eceb; --surface:#fbfcfb; --surface-2:#f0f3f2;
-  --ink:#131a19; --ink-2:#4d5957; --ink-3:#7b8785;
-  --rule:#c8d0ce; --rule-2:#dce2e0;
-  --tf1:#3a82c4; --tf1-soft:#c9dcef; --tf2:#e3cf3c; --contact:#e4572e; --dna:#b9c1bf;
-  --m1a:#9adbd4; --m1b:#0a4f4a; --m2a:#f2cf7a; --m2b:#7a4a03;
-  --high:#2b7fb0; --low:#d5452f;
+  /* single dark look: plain black page, the structures carry the colour */
+  color-scheme:dark;
+  --bg:#000; --surface:#000; --surface-2:#0c0c0c;
+  --ink:#f2f2f2; --ink-2:#b0b0b0; --ink-3:#808080;
+  --rule:#2a2a2a; --rule-2:#1c1c1c;
+  --tf1:#63a6e6; --tf1-soft:#26405b; --tf2:#efdc55; --contact:#ff7a52; --dna:#6a6a6a;
+  --m1a:#2f7f78; --m1b:#b7efe9; --m2a:#8a6418; --m2b:#ffe3a1;
+  --high:#6bb3dc; --low:#ff8a73;
   --mono:Arial,Helvetica,sans-serif;
   --sans:Arial,Helvetica,sans-serif;
   --cond:Arial,Helvetica,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
-  --rule:#2b3533;--rule-2:#222b29;--tf1:#63a6e6;--tf1-soft:#26405b;--tf2:#efdc55;--contact:#ff7a52;--dna:#59635f;
-  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0e1413;--surface:#161d1c;--surface-2:#1c2423;--ink:#e6ecea;--ink-2:#a2aeab;--ink-3:#74807d;
-  --rule:#2b3533;--rule-2:#222b29;--tf1:#63a6e6;--tf1-soft:#26405b;--tf2:#efdc55;--contact:#ff7a52;--dna:#59635f;
-  --m1a:#2f7f78;--m1b:#b7efe9;--m2a:#8a6418;--m2b:#ffe3a1;--high:#6bb3dc;--low:#ff8a73;color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0;-webkit-font-smoothing:antialiased}
