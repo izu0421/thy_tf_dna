@@ -1,7 +1,7 @@
 """Generate the representative-structure notebooks (4 and 4b) from one set of cells.
 
 Usage (from the project root; the target notebook must already exist, its metadata is kept):
-  python scripts/make_notebook_4.py <notebook.ipynb> <group> <header> <rep_mode> <show_idr> <domain_override> <camera>
+  python scripts/make_notebook_4.py <notebook.ipynb> <group> <header> <rep_mode> <show_idr> <domain_override> <camera> <low_panel>
 
   group            TF pair + motif combination, e.g. RUNX1_LEF1_14_157
   header           text for the first comment line of the settings cell
@@ -9,14 +9,15 @@ Usage (from the project root; the target notebook must already exist, its metada
   show_idr         none | linkers | all
   domain_override  Python dict literal {TF: [(start, end, label), ...]}, or {} for the curated domains
   camera           interface | dna:<deg>
+  low_panel        tf1 | dna   (how the low-syntax panel of the interface figure is placed)
 
 Notebook 4 (RUNX1-LEF1):
   python scripts/make_notebook_4.py notebooks/4_representative_structures_n100_rho0.6.ipynb RUNX1_LEF1_14_157 \
-    "RUNX1-LEF1 (motif combination 14_157); RUNX1-ETS1 is in notebook 4b" quantile none "{}" interface
+    "RUNX1-LEF1 (motif combination 14_157); RUNX1-ETS1 is in notebook 4b" quantile none "{}" interface tf1
 Notebook 4b (RUNX1-ETS1, regions of the 4L0Z crystal interface):
   python scripts/make_notebook_4.py notebooks/4b_representative_structures_RUNX1_ETS1_n100_rho0.6.ipynb RUNX1_ETS1_14_64 \
     "RUNX1-ETS1 (motif combination 14_64); same code as notebook 4 (RUNX1-LEF1), but RUNX1 and the ETS1 ETS domain are extended to the regions of the 4L0Z crystal interface (Shrivastava et al. 2014) - see DOMAIN_OVERRIDE" \
-    median_paired_diff none '{"RUNX1": [(50, 212, "Runt + C-terminal segment")], "ETS1": [(51, 136, "PNT"), (301, 441, "ETS + flanking regions")]}' dna:180
+    median_paired_diff none '{"RUNX1": [(50, 212, "Runt + C-terminal segment")], "ETS1": [(51, 136, "PNT"), (301, 441, "ETS + flanking regions")]}' dna:180 dna
 Then execute the notebook (jupyter nbconvert --to notebook --execute --inplace ...).
 """
 import json
@@ -41,7 +42,7 @@ warnings.filterwarnings("ignore")
 logging.getLogger("matplotlib.font_manager").setLevel(logging.ERROR)''',
 
 r'''# representative high vs low structures for one TF pair: __HEADER__
-# domain-only BSA comes from scripts/domain_bsa.py (curated UniProt/Pfam domains, see notebook 7)
+# domain-only BSA comes from scripts/domain_bsa.py (curated UniProt/Pfam domains)
 OUT = "../af3_screen_n100_rho0.6/outputs_inference"
 GROUPS = ["__GROUP__"]
 PAIR = "_".join(GROUPS[0].split("_")[:2])
@@ -67,16 +68,23 @@ DOMAIN_OVERRIDE = __DOMAIN_OVERRIDE__
 #   "interface"  side view of the TF1-TF2 interface of the high model, DNA on top
 #   "dna:<deg>"  DNA of the high model horizontal, rotated by <deg> about the DNA axis
 CAMERA = "__CAMERA__"
+# low-syntax panel of the interface-mesh figure:
+#   "tf1"  low superposed on high via TF1, so TF1 sits in the same place in both panels
+#   "dna"  low superposed on high via the DNA (same DNA orientation as the sequence strip), then turned
+#          about the DNA axis so that the DNA faces the viewer
+LOW_PANEL = "__LOW_PANEL__"
 IDR_NOTE = {"none": "", "linkers": "linker between a TF's domains: lighter tint",
             "all": "residues outside the annotated domains: lighter tint"}[SHOW_IDR]
 
 # structure colours in the style of Baker-lab figures (teal / yellow complex partners, grey context;
 # e.g. Vazquez Torres et al. Nature 2023, Cao et al. Nature 2022)
 COL = {"TF1": "#1f9e96", "TF2": "#f2c14e", "DNA": "#d0d0d0", "IFACE": "#e4572e",
-       "MOTIF1": "#0f766e", "MOTIF2": "#b7791f",  # each TF's motif on the DNA: darker shade of that TF's colour
+       "MOTIF1": "#0f766e", "MOTIF2": "#b7791f",
        "IDR1": "#a6dbd6", "IDR2": "#fae6b0"}  # residues outside the annotated domains (only if SHOW_IDR)
+# each TF's motif on the DNA: gradient light -> dark along the motif (5' -> 3' of the motif as written)
+MOTIF_GRADIENT = {"MOTIF1": ("#9adbd4", "#0a4f4a"), "MOTIF2": ("#f7d98b", "#7a4a03")}
 COL_NAME = {"TF1": "teal", "TF2": "yellow", "DNA": "light grey", "IFACE": "orange-red",
-            "MOTIF1": "dark teal", "MOTIF2": "dark amber"}
+            "MOTIF1": "teal", "MOTIF2": "amber"}
 
 def yy_pymol_colours(cmd):
     for k, hexcol in COL.items():
@@ -157,34 +165,46 @@ seqs["name"] = (seqs["TF1"] + "_" + seqs["TF2"] + "_" + seqs["motif_combination"
                 + "_bg" + seqs["background_idx"].astype(str))
 seqs = seqs.set_index("name")
 
-def yy_motif_pos(name):
-    """{'MOTIF1': (start, end), 'MOTIF2': (start, end)}: 1-based position of each TF's motif on chain C
-    (motif searched on either strand; None if it is not found as an exact match)."""
+def yy_hex_mix(c0, c1, t):
+    """colour between two hex colours (t = 0 -> c0, t = 1 -> c1)"""
+    a, b = (np.array([int(c[i:i + 2], 16) for i in (1, 3, 5)]) for c in (c0, c1))
+    return "#" + "".join(f"{int(round(v)):02x}" for v in a + (b - a) * t)
+
+def yy_motif_shades(name):
+    """{position on chain C (1-based): (motif key, hex colour)} for the nucleotides of each TF's motif.
+    Each motif is a gradient from light (5' end of the motif as written in the input table) to dark (3' end),
+    so the gradient also shows the motif's orientation; a motif found as its reverse complement runs the
+    other way along chain C. Motifs are matched exactly on either strand (not coloured if not found)."""
     r = seqs.loc[name]
     rc = lambda x: x[::-1].translate(str.maketrans("ACGT", "TGCA"))
-    pos = {}
+    shades = {}
     for k, motif in [("MOTIF1", r["motif1"]), ("MOTIF2", r["motif2"])]:
-        i = max(r["sequence"].find(motif), r["sequence"].find(rc(motif)))
-        pos[k] = (i + 1, i + len(motif)) if i >= 0 else None
-    return pos
+        fwd, rev = r["sequence"].find(motif), r["sequence"].find(rc(motif))
+        if fwd < 0 and rev < 0:
+            continue
+        start = fwd if fwd >= 0 else rev
+        for j in range(len(motif)):
+            t = j / (len(motif) - 1)
+            shades[start + 1 + j] = (k, yy_hex_mix(*MOTIF_GRADIENT[k], t if fwd >= 0 else 1 - t))
+    return shades
 
 def yy_colour_motifs(cmd, obj, name):
-    """colour the nucleotides of each TF's motif (both strands) in a darker shade of that TF's colour"""
+    """colour the base pairs of each TF's motif (both strands) with the motif gradient"""
     n = len(seqs.loc[name, "sequence"])
-    for k, se in yy_motif_pos(name).items():
-        if se is not None:
-            cmd.color(f"yy_{k}", f"{obj} and ((chain C and resi {se[0]}-{se[1]}) or (chain D and resi {n + 1 - se[1]}-{n + 1 - se[0]}))")
+    for i, (k, hexcol) in yy_motif_shades(name).items():
+        cmd.set_color(f"yy_nt_{obj}_{i}", [int(hexcol[j:j + 2], 16) / 255 for j in (1, 3, 5)])
+        cmd.color(f"yy_nt_{obj}_{i}", f"{obj} and ((chain C and resi {i}) or (chain D and resi {n + 1 - i}))")
 
 def yy_draw_sequence(ax, name, y=-0.03, dx=0.03, fontsize=10):
-    """write the modelled DNA (chain C, 5'->3') under a panel, with each TF's motif in its motif colour"""
-    seq, pos = seqs.loc[name, "sequence"], yy_motif_pos(name)
+    """write the modelled DNA (chain C, 5'->3') under a panel, motif nucleotides in their gradient colour"""
+    seq, shades = seqs.loc[name, "sequence"], yy_motif_shades(name)
     x0 = 0.5 - dx * (len(seq) - 1) / 2
     ax.text(x0 - 1.2 * dx, y, "5'", transform=ax.transAxes, ha="right", va="top", fontsize=fontsize - 2, color="0.5")
     ax.text(x0 + dx * len(seq) + 0.2 * dx, y, "3'", transform=ax.transAxes, ha="left", va="top", fontsize=fontsize - 2, color="0.5")
     for i, nt in enumerate(seq, start=1):
-        key = next((k for k, se in pos.items() if se is not None and se[0] <= i <= se[1]), None)
         ax.text(x0 + dx * (i - 1), y, nt, transform=ax.transAxes, ha="center", va="top", fontsize=fontsize,
-                family="DejaVu Sans Mono", color=COL[key] if key else "0.6", fontweight="bold" if key else "normal")
+                family="DejaVu Sans Mono", color=shades[i][1] if i in shades else "0.6",
+                fontweight="bold" if i in shades else "normal")
 
 def yy_resi(tf):
     """PyMOL resi selection for a TF's structured domains, e.g. '50-179' or '51-136+335-415'."""
@@ -386,7 +406,8 @@ r'''# single interface render: both domains and the DNA as cartoon; only the res
 def yy_render_interface_mesh(group, width=1400, height=1300, yaw_deg=90, contact_cut=4.5, carve_cut=3.0, mesh_alpha=0.75):
     """high and low representative in one view: domains + DNA as cartoon, and the TF1 surface that TF2
     lands on as a mesh patch, per model (no mesh where the two domains do not touch).
-    low is superposed on high via the TF1 domain, so TF1 and the patch sit in the same place in both panels."""
+    low is superposed on high via the DNA (same orientation in both panels) and then turned about the
+    DNA axis so that its DNA faces the viewer."""
     tf1, tf2 = group.split("_")[:2]
     p = pymol2.PyMOL()
     p.start()
@@ -394,33 +415,21 @@ def yy_render_interface_mesh(group, width=1400, height=1300, yaw_deg=90, contact
     yy_pymol_colours(cmd)
     for cls in ["high", "low"]:
         cmd.load(f"{OUT}/{reps[(group, cls)]}_model.cif", cls)
-    cmd.super(f"low and chain A and resi {yy_resi(tf1)} and name CA", f"high and chain A and resi {yy_resi(tf1)} and name CA")
+    # low is superposed on high via the DNA backbone (same length, same 5'->3' direction), so the DNA has
+    # the same orientation in both panels and the sequence under each panel reads left to right along it
+    p_lo, p_hi = "low and chain C+D and name P", "high and chain C+D and name P"
+    if LOW_PANEL == "tf1":
+        cmd.super(f"low and chain A and resi {yy_resi(tf1)} and name CA", f"high and chain A and resi {yy_resi(tf1)} and name CA")
+    elif cmd.count_atoms(p_lo) == cmd.count_atoms(p_hi):
+        cmd.pair_fit(p_lo, p_hi)
+    else:
+        cmd.align(p_lo, p_hi)
     cmd.hide("everything")
     yy_pymol_style(cmd)
     cmd.set("mesh_quality", 1)  # coarser grid = fewer mesh lines
     cmd.set("mesh_width", 0.5)
     foot_a = f"resi {'+'.join(map(str, iface['foot_A']))}"
     foot_b = f"resi {'+'.join(map(str, iface['foot_B']))}"
-    shown = []
-    for cls in ["high", "low"]:
-        dom_a, dom_b = f"({cls} and chain A and resi {yy_resi(tf1)})", f"({cls} and chain B and resi {yy_resi(tf2)})"
-        cmd.show("cartoon", f"{dom_a} or {dom_b} or ({cls} and chain C+D)")
-        cmd.color("yy_TF1", dom_a)
-        cmd.color("yy_TF2", dom_b)
-        cmd.color("yy_DNA", f"{cls} and chain C+D")
-        # mesh = surface of the TF1 residues in contact with TF2 (any heavy atom within contact_cut A), taken from
-        # the surface of the TF1 region alone (own object, so TF2/DNA do not shape it) - one continuous sheet,
-        # one colour. The mesh is carved to those residues (mesh_carve_*): without carving PyMOL draws it
-        # well beyond the selected atoms.
-        cmd.create(f"patch_{cls}", dom_a)
-        cmd.hide("everything", f"patch_{cls}")
-        cmd.select(f"carve_{cls}", f"byres ((patch_{cls} and not elem H) within {contact_cut} of ({dom_b} and not elem H))")
-        cmd.show("mesh", f"carve_{cls}")
-        cmd.color("yy_IFACE", f"patch_{cls}")
-        cmd.set("mesh_carve_selection", f"carve_{cls}", f"patch_{cls}")
-        cmd.set("mesh_carve_cutoff", carve_cut, f"patch_{cls}")
-        shown.append(f"{dom_a} or {dom_b} or ({cls} and chain C+D) or {yy_show_idr(cmd, cls, tf1, tf2)}")
-
     # camera from the high model: z = footprint TF1 -> TF2, y toward the DNA, then yaw to a side view
     fa = np.array(cmd.get_coords(f"high and chain A and {foot_a}").mean(0))
     fb = np.array(cmd.get_coords(f"high and chain B and {foot_b}").mean(0))
@@ -443,6 +452,59 @@ def yy_render_interface_mesh(group, width=1400, height=1300, yaw_deg=90, contact
         w = np.radians(float(CAMERA.split(":")[1]))
         z = np.cos(w) * v + np.sin(w) * u
         y = np.cross(z, x)
+
+    # turn the low model about the DNA axis so that its DNA faces the viewer: of all rotations (15 deg steps)
+    # take the one with the fewest protein atoms in front of the DNA in this view (0 deg if already best)
+    pc = cmd.get_coords("high and chain C+D and name P")
+    dna_c, dna_ax = pc.mean(0), np.linalg.svd(pc - pc.mean(0))[2][0]
+    def yy_in_front(sel_prot, sel_dna):
+        pr, dn = cmd.get_coords(sel_prot) - dna_c, cmd.get_coords(sel_dna) - dna_c
+        return yy_count_front(pr, dn)
+    def yy_count_front(pr, dn):
+        p2, d2 = pr @ np.vstack([x, y]).T, dn @ np.vstack([x, y]).T
+        pz, dz = pr @ z, dn @ z
+        n = 0
+        for i in range(0, len(p2), 500):  # protein atoms that project onto the DNA (within 3 A) and lie in front
+            dist = np.linalg.norm(p2[i:i + 500, None, :] - d2[None, :, :], axis=2)
+            near = dist < 3.0
+            n += int((near & (pz[i:i + 500, None] > dz[None, :])).any(axis=1).sum())
+        return n
+    def yy_rot(v, ang):  # Rodrigues rotation about the DNA axis
+        k, c_, s_ = dna_ax, np.cos(np.radians(ang)), np.sin(np.radians(ang))
+        return v * c_ + np.cross(k, v) * s_ + np.outer(v @ k, k) * (1 - c_)
+    sel_prot = f"low and ((chain A and resi {yy_resi(tf1)}) or (chain B and resi {yy_resi(tf2)})) and not elem H"
+    pr0, dn0 = cmd.get_coords(sel_prot) - dna_c, cmd.get_coords("low and chain C+D") - dna_c
+    counts = {ang: yy_count_front(yy_rot(pr0, ang), yy_rot(dn0, ang)) for ang in range(0, 360, 15)}
+    low_rot = min(counts, key=lambda ang: (counts[ang], min(ang, 360 - ang))) if LOW_PANEL == "dna" else 0
+    if low_rot:
+        cmd.rotate(list(map(float, dna_ax)), low_rot, "low", camera=0, origin=list(map(float, dna_c)))
+        if abs(yy_in_front(sel_prot, "low and chain C+D") - counts[low_rot]) > 5:  # opposite sign convention
+            cmd.rotate(list(map(float, dna_ax)), -2 * low_rot, "low", camera=0, origin=list(map(float, dna_c)))
+    if LOW_PANEL == "dna":
+        print(f"{group}: low model rotated {low_rot} deg about the DNA axis "
+              f"({counts[0]} -> {counts[low_rot]} protein atoms in front of the DNA)")
+
+    shown = []
+    for cls in ["high", "low"]:
+        dom_a, dom_b = f"({cls} and chain A and resi {yy_resi(tf1)})", f"({cls} and chain B and resi {yy_resi(tf2)})"
+        cmd.show("cartoon", f"{dom_a} or {dom_b} or ({cls} and chain C+D)")
+        cmd.color("yy_TF1", dom_a)
+        cmd.color("yy_TF2", dom_b)
+        cmd.color("yy_DNA", f"{cls} and chain C+D")
+        yy_colour_motifs(cmd, cls, reps[(group, cls)])
+        # mesh = surface of the TF1 residues in contact with TF2 (any heavy atom within contact_cut A), taken from
+        # the surface of the TF1 region alone (own object, so TF2/DNA do not shape it) - one continuous sheet,
+        # one colour. The mesh is carved to those residues (mesh_carve_*): without carving PyMOL draws it
+        # well beyond the selected atoms.
+        cmd.create(f"patch_{cls}", dom_a)
+        cmd.hide("everything", f"patch_{cls}")
+        cmd.select(f"carve_{cls}", f"byres ((patch_{cls} and not elem H) within {contact_cut} of ({dom_b} and not elem H))")
+        cmd.show("mesh", f"carve_{cls}")
+        cmd.color("yy_IFACE", f"patch_{cls}")
+        cmd.set("mesh_carve_selection", f"carve_{cls}", f"patch_{cls}")
+        cmd.set("mesh_carve_cutoff", carve_cut, f"patch_{cls}")
+        shown.append(f"{dom_a} or {dom_b} or ({cls} and chain C+D) or {yy_show_idr(cmd, cls, tf1, tf2)}")
+
     view = list(cmd.get_view())
     view[:9] = np.vstack([x, y, z]).T.flatten().tolist()
     cmd.set_view(view)
@@ -487,8 +549,10 @@ fig.text(0.5, 0.01,
          f"DNA ({COL_NAME['DNA']})"
          + (" · " + IDR_NOTE if IDR_NOTE else "") +
          f"\nmesh ({COL_NAME['IFACE']}) = {tf1} surface in contact with {tf2} (residues with an atom within 4.5 Å); "
-         f"low superposed on high via {tf1}\n"
-         f"sequence = modelled DNA (top strand): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}",
+         + ("low: DNA superposed on high, then turned about the DNA axis so the DNA faces the viewer\n"
+            if LOW_PANEL == "dna" else f"low superposed on high via {tf1}\n") +
+         f"DNA and sequence (top strand): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}; "
+         f"light to dark = 5' to 3' of the motif",
          ha="center", va="bottom", fontsize=8)
 plt.tight_layout(rect=(0, 0.11, 1, 0.97))
 plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_interface.pdf", bbox_inches='tight')
@@ -577,7 +641,8 @@ fig.text(0.5, 0.01,
          f"{tf1} {yy_domain_label(tf1)}: surface (pale teal), {tf2} footprint in {COL_NAME['IFACE']} "
          f"(residues with an atom within 4.5 Å)\n{tf2} {yy_domain_label(tf2)}: see-through cartoon ({COL_NAME['TF2']}) · "
          f"DNA with nucleotides as sticks ({COL_NAME['DNA']}) · low superposed on high via {tf1}\n"
-         f"motif nucleotides (sticks and sequence): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}",
+         f"motif nucleotides (sticks and sequence): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}; "
+         f"light to dark = 5' to 3' of the motif",
          ha="center", va="bottom", fontsize=8)
 plt.tight_layout(rect=(0, 0.11, 1, 0.97))
 plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_footprint.pdf", bbox_inches='tight')
@@ -587,7 +652,7 @@ plt.close()''',
 
 GROUP = sys.argv[2]
 HEADER = sys.argv[3]
-CELLS = [c.replace("__GROUP__", GROUP).replace("__HEADER__", HEADER).replace("__REP_MODE__", sys.argv[4]).replace("__SHOW_IDR__", sys.argv[5]).replace("__DOMAIN_OVERRIDE__", sys.argv[6]).replace("__CAMERA__", sys.argv[7]) for c in CELLS]
+CELLS = [c.replace("__GROUP__", GROUP).replace("__HEADER__", HEADER).replace("__REP_MODE__", sys.argv[4]).replace("__SHOW_IDR__", sys.argv[5]).replace("__DOMAIN_OVERRIDE__", sys.argv[6]).replace("__CAMERA__", sys.argv[7]).replace("__LOW_PANEL__", sys.argv[8]) for c in CELLS]
 nb = json.load(open(sys.argv[1]))
 nb["cells"] = [{"cell_type": "code", "execution_count": None, "id": f"c{i}", "metadata": {}, "outputs": [],
                 "source": src.splitlines(keepends=True)} for i, src in enumerate(CELLS)]
