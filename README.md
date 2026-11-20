@@ -47,7 +47,11 @@ protein_dna/
 │                                    its tables and figures are still in results/ and it is in the git history)
 │
 ├── scripts/                         analysis helpers: fetch_tf_domains.py; domain_bsa.py (+ .sbatch, 32 CPUs, ~10 min);
-│                                    make_notebook_4.py (writes notebooks 4 and 4b, usage in its docstring)
+│                                    make_notebook_4.py (writes notebooks 4 and 4b, usage in its docstring);
+│                                    site/ (page source, structure export and build script for the project site)
+│
+├── index.html, docs/                project site (GitHub Pages): interactive 3D page; docs/overview.html = write-up.
+│                                    Edit scripts/site/page.html, then run python scripts/site/build_site.py
 │
 ├── results/
 │   ├── tables/                      final CSVs written by the notebooks
@@ -57,7 +61,8 @@ protein_dna/
 ├── logs/notebooks/                  notebook execution logs
 └── archive/                         not used by the current analysis
     ├── af3_screen_n100_rho0.6_presubmission_draft/   pre-fix copy of the screen folder
-    └── superseded_figures_sep2026/  older PNG versions of the current PDFs
+    ├── superseded_figures_sep2026/  older PNG versions of the current PDFs
+    └── superseded_figures_nov2026/  earlier representative-structure figures and render panels
 ```
 
 ## Data flow

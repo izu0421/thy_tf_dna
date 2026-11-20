@@ -76,14 +76,16 @@ LOW_PANEL = "__LOW_PANEL__"
 IDR_NOTE = {"none": "", "linkers": "linker between a TF's domains: lighter tint",
             "all": "residues outside the annotated domains: lighter tint"}[SHOW_IDR]
 
-# structure colours in the style of Baker-lab figures (teal / yellow complex partners, grey context;
+# proteins and DNA use different hues so they cannot be confused: TF1 blue, TF2 lemon yellow;
+# the motifs on the DNA are teal (TF1 motif) and amber (TF2 motif), see MOTIF_GRADIENT.
+# flat outlined style after Baker-lab figures (two-colour complex partners, grey context;
 # e.g. Vazquez Torres et al. Nature 2023, Cao et al. Nature 2022)
-COL = {"TF1": "#1f9e96", "TF2": "#f2c14e", "DNA": "#d0d0d0", "IFACE": "#e4572e",
+COL = {"TF1": "#3a82c4", "TF2": "#e3cf3c", "DNA": "#d0d0d0", "IFACE": "#e4572e",
        "MOTIF1": "#0f766e", "MOTIF2": "#b7791f",
-       "IDR1": "#a6dbd6", "IDR2": "#fae6b0"}  # residues outside the annotated domains (only if SHOW_IDR)
+       "IDR1": "#b3cde8", "IDR2": "#f3eaa6"}  # residues outside the annotated domains (only if SHOW_IDR)
 # each TF's motif on the DNA: gradient light -> dark along the motif (5' -> 3' of the motif as written)
 MOTIF_GRADIENT = {"MOTIF1": ("#9adbd4", "#0a4f4a"), "MOTIF2": ("#f7d98b", "#7a4a03")}
-COL_NAME = {"TF1": "teal", "TF2": "yellow", "DNA": "light grey", "IFACE": "orange-red",
+COL_NAME = {"TF1": "blue", "TF2": "lemon yellow", "DNA": "light grey", "IFACE": "orange-red",
             "MOTIF1": "teal", "MOTIF2": "amber"}
 
 def yy_pymol_colours(cmd):
@@ -257,7 +259,7 @@ for group in GROUPS:
             reps[(group, cls)] = c.loc[(c["BSA_domain"] - c["BSA_domain"].quantile(q)).abs().idxmin(), "name"]
 bsa[bsa["name"].isin(reps.values())][["group", "class", "name", "BSA_domain", "BSA", "iptm_AB"]]''',
 
-r'''# PyMOL: structured domains only (cartoon, TF1 teal / TF2 yellow), DNA light grey,
+r'''# PyMOL: structured domains only (cartoon, TF1 blue / TF2 lemon yellow), DNA light grey,
 # domain-domain interface residues (<= 4.5 A) as sticks (N blue, O red).
 # low is superposed on high via DNA phosphates and both are oriented on the DNA, so the two panels share one view
 def yy_render_pair(group, width=1400, height=1100):
@@ -569,7 +571,7 @@ def yy_render_footprint(group, width=1400, height=1300, contact_cut=4.5, tf2_tra
     p.start()
     cmd = p.cmd
     yy_pymol_colours(cmd)
-    cmd.set_color("yy_TF1_surf", [0.74, 0.89, 0.87])  # pale teal: TF1 surface outside the footprint
+    cmd.set_color("yy_TF1_surf", [0.79, 0.86, 0.94])  # pale blue: TF1 surface outside the footprint
     for cls in ["high", "low"]:
         cmd.load(f"{OUT}/{reps[(group, cls)]}_model.cif", cls)
     cmd.super(f"low and chain A and resi {yy_resi(tf1)} and name CA", f"high and chain A and resi {yy_resi(tf1)} and name CA")
@@ -638,7 +640,7 @@ for ax, cls in zip(axes, ["high", "low"]):
     yy_draw_sequence(ax, rep)
 fig.suptitle(f"{tf2} footprint on {tf1}", fontsize=12)
 fig.text(0.5, 0.01,
-         f"{tf1} {yy_domain_label(tf1)}: surface (pale teal), {tf2} footprint in {COL_NAME['IFACE']} "
+         f"{tf1} {yy_domain_label(tf1)}: surface (pale blue), {tf2} footprint in {COL_NAME['IFACE']} "
          f"(residues with an atom within 4.5 Å)\n{tf2} {yy_domain_label(tf2)}: see-through cartoon ({COL_NAME['TF2']}) · "
          f"DNA with nucleotides as sticks ({COL_NAME['DNA']}) · low superposed on high via {tf1}\n"
          f"motif nucleotides (sticks and sequence): {tf1} motif {COL_NAME['MOTIF1']}, {tf2} motif {COL_NAME['MOTIF2']}; "

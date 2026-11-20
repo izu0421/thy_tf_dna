@@ -189,12 +189,12 @@
         <figcaption class="hi">High syntax</figcaption>
       </figure>
       <figure>
-        <img src="assets/hero_low.png" alt="AlphaFold 3 model of RUNX1 and ETS1 on a low-syntax DNA sequence, with one contact patch marked on RUNX1">
+        <img src="assets/hero_low.png" alt="AlphaFold 3 model of RUNX1 and ETS1 on a low-syntax DNA sequence, turned so the DNA faces the viewer, with one contact patch marked on RUNX1">
         <figcaption class="lo">Low syntax</figcaption>
       </figure>
       <div class="seq"><span class="g">TT</span><span class="m2">CAGGAAGT</span><span class="m1">TGTGGTT</span><span class="g">TT</span></div>
       <div class="seq"><span class="g">TA</span><span class="m1">TGTGGTT</span><span class="m2">CAGGAAGT</span><span class="g">TG</span></div>
-      <p>RUNX1 (teal) and ETS1 (yellow) on DNA (grey). The same two motifs, <span class="m1">RUNX</span> and <span class="m2">ETS</span>, in swapped order. Orange mesh marks where ETS1 touches RUNX1; the upper contact appears only in the high-syntax arrangement.</p>
+      <p>RUNX1 (blue) and ETS1 (yellow) on DNA. The same two motifs, <span class="m1">RUNX</span> and <span class="m2">ETS</span>, in swapped order. Orange mesh marks where ETS1 touches RUNX1; high has two contacts, low only one.</p>
     </div>
   </div>
   <div class="wrap">
@@ -271,7 +271,7 @@
     <div class="two">
       <figure class="fig">
         <a href="assets/representative_RUNX1_LEF1_domains_interface.png"><img src="assets/representative_RUNX1_LEF1_domains_interface.png" alt="RUNX1 and LEF1 domains on DNA in a high and a low syntax model, with a mesh patch on RUNX1 in the high model only"></a>
-        <figcaption><b>Side view.</b> Mesh: RUNX1 surface in contact with LEF1. Present in high, absent in low.</figcaption>
+        <figcaption><b>Side view.</b> RUNX1 blue, LEF1 yellow. Mesh: RUNX1 surface in contact with LEF1; present in high, absent in low. The DNA and the sequence under each panel show the RUNX motif in teal and the LEF1 motif in amber, light to dark from 5′ to 3′.</figcaption>
       </figure>
       <figure class="fig">
         <a href="assets/representative_RUNX1_LEF1_domains_footprint.png"><img src="assets/representative_RUNX1_LEF1_domains_footprint.png" alt="Surface of the RUNX1 Runt domain with the LEF1 footprint painted on it in the high model and no footprint in the low model"></a>
@@ -317,7 +317,7 @@
     <div class="two">
       <figure class="fig">
         <a href="assets/representative_RUNX1_ETS1_domains_interface.png"><img src="assets/representative_RUNX1_ETS1_domains_interface.png" alt="RUNX1 and ETS1 on DNA in a high and a low syntax model; two mesh patches on RUNX1 in high, one in low"></a>
-        <figcaption><b>Side view.</b> High has two contacts: the PNT domain on the Runt domain (below the DNA) and the RUNX1 segment against the ETS-domain end (above). Low keeps only the first; the RUNX1 segment sticks up as a free helix. The sequence under each panel is the modelled DNA with the RUNX motif in teal and the ETS motif in amber.</figcaption>
+        <figcaption><b>Side view.</b> RUNX1 blue, ETS1 yellow. High has two contacts: the PNT domain on the Runt domain (below the DNA) and the RUNX1 segment against the ETS-domain end (above). Low keeps only the first; the RUNX1 segment sticks out as a free helix. The low model is lined up on the DNA and turned so the DNA faces the viewer. The DNA and the sequence under each panel show the RUNX motif in teal and the ETS motif in amber, light to dark from 5′ to 3′.</figcaption>
       </figure>
       <figure class="fig">
         <a href="assets/representative_RUNX1_ETS1_domains_footprint.png"><img src="assets/representative_RUNX1_ETS1_domains_footprint.png" alt="RUNX1 drawn as a surface with the ETS1 footprint painted on it; two footprints in the high model and one in the low model"></a>
@@ -367,7 +367,7 @@ sbatch scripts/domain_bsa.sbatch
       <li><b>3</b> &nbsp;Inter-chain PAE</li>
       <li><b>4, 4b</b> &nbsp;Representative structures <span>· RUNX1–LEF1, RUNX1–ETS1</span></li>
       <li><b>6</b> &nbsp;RUNX1–ETS1 against the 4L0Z crystal structure</li>
-      <li><b>7</b> &nbsp;Domain-only BSA <span>· the screen-wide result above</span></li>
+      <li><b>scripts/</b> &nbsp;Domain annotations, domain-only BSA, notebook and site generators</li>
     </ul>
   </div>
 </section>
