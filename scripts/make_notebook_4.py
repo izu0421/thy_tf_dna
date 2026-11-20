@@ -73,6 +73,10 @@ CAMERA = "__CAMERA__"
 #   "dna"  low superposed on high via the DNA (same DNA orientation as the sequence strip), then turned
 #          about the DNA axis so that the DNA faces the viewer
 LOW_PANEL = "__LOW_PANEL__"
+# render quality: PyMOL panels are ray-traced at RENDER_SCALE x the base pixel size (2,800 px wide at 2;
+# render time grows with the square), and the figures are saved with the panels embedded at FIG_DPI
+RENDER_SCALE = 2
+FIG_DPI = 600
 IDR_NOTE = {"none": "", "linkers": "linker between a TF's domains: lighter tint",
             "all": "residues outside the annotated domains: lighter tint"}[SHOW_IDR]
 
@@ -290,7 +294,7 @@ def yy_render_pair(group, width=1400, height=1100):
         cmd.disable("all")
         cmd.enable(cls)
         cmd.png(f"../results/figures/representative_structures/{reps[(group, cls)]}_{TAG}.png",
-                width=width, height=height, dpi=150, ray=1)
+                width=int(width * RENDER_SCALE), height=int(height * RENDER_SCALE), dpi=150, ray=1)
     p.stop()
 
 os.makedirs("../results/figures/representative_structures", exist_ok=True)
@@ -316,7 +320,7 @@ fig.text(0.5, 0.005, f"TF1 domain: {COL_NAME['TF1']} · TF2 domain: {COL_NAME['T
          "interface residues (≤ 4.5 Å): sticks",
          ha="center", fontsize=9)
 plt.tight_layout(rect=(0.03, 0.015, 1, 1))
-plt.savefig(f"../results/figures/representative_{PAIR}_{TAG}.pdf", bbox_inches='tight')
+plt.savefig(f"../results/figures/representative_{PAIR}_{TAG}.pdf", bbox_inches='tight', dpi=FIG_DPI)
 plt.show()
 plt.close()''',
 
@@ -429,7 +433,7 @@ def yy_render_interface_mesh(group, width=1400, height=1300, yaw_deg=90, contact
     cmd.hide("everything")
     yy_pymol_style(cmd)
     cmd.set("mesh_quality", 1)  # coarser grid = fewer mesh lines
-    cmd.set("mesh_width", 0.5)
+    cmd.set("mesh_width", 0.5 * RENDER_SCALE)  # line widths are in pixels, so they scale with the render
     foot_a = f"resi {'+'.join(map(str, iface['foot_A']))}"
     foot_b = f"resi {'+'.join(map(str, iface['foot_B']))}"
     # camera from the high model: z = footprint TF1 -> TF2, y toward the DNA, then yaw to a side view
@@ -517,11 +521,11 @@ def yy_render_interface_mesh(group, width=1400, height=1300, yaw_deg=90, contact
         # the outlined style (ray_trace_mode 1) would trace every mesh line in black, so the mesh is taken
         # from a plain render: outlined scene without mesh + mesh pixels (where plain renders with/without differ)
         png = f"../results/figures/representative_structures/{reps[(group, cls)]}_{TAG}_interface_mesh"
-        cmd.png(f"{png}_outlined.png", width=width, height=height, dpi=300, ray=1)
+        cmd.png(f"{png}_outlined.png", width=int(width * RENDER_SCALE), height=int(height * RENDER_SCALE), dpi=300, ray=1)
         cmd.set("ray_trace_mode", 0)
-        cmd.png(f"{png}_plain.png", width=width, height=height, dpi=300, ray=1)
+        cmd.png(f"{png}_plain.png", width=int(width * RENDER_SCALE), height=int(height * RENDER_SCALE), dpi=300, ray=1)
         cmd.enable(f"patch_{cls}")
-        cmd.png(f"{png}_plainmesh.png", width=width, height=height, dpi=300, ray=1)
+        cmd.png(f"{png}_plainmesh.png", width=int(width * RENDER_SCALE), height=int(height * RENDER_SCALE), dpi=300, ray=1)
         cmd.set("ray_trace_mode", 1)
         img, plain, mesh = (mpimg.imread(f"{png}_{k}.png") for k in ["outlined", "plain", "plainmesh"])
         is_mesh = np.abs(mesh - plain).max(axis=2) > 0.02
@@ -557,7 +561,7 @@ fig.text(0.5, 0.01,
          f"light to dark = 5' to 3' of the motif",
          ha="center", va="bottom", fontsize=8)
 plt.tight_layout(rect=(0, 0.11, 1, 0.97))
-plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_interface.pdf", bbox_inches='tight')
+plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_interface.pdf", bbox_inches='tight', dpi=FIG_DPI)
 plt.show()
 plt.close()''',
 
@@ -626,7 +630,7 @@ def yy_render_footprint(group, width=1400, height=1300, contact_cut=4.5, tf2_tra
         for obj in [cls, f"surf_{cls}", f"tf2_{cls}"]:
             cmd.enable(obj)
         cmd.png(f"../results/figures/representative_structures/{reps[(group, cls)]}_{TAG}_footprint.png",
-                width=width, height=height, dpi=300, ray=1)
+                width=int(width * RENDER_SCALE), height=int(height * RENDER_SCALE), dpi=300, ray=1)
     p.stop()
 
 yy_render_footprint(group)
@@ -647,7 +651,7 @@ fig.text(0.5, 0.01,
          f"light to dark = 5' to 3' of the motif",
          ha="center", va="bottom", fontsize=8)
 plt.tight_layout(rect=(0, 0.11, 1, 0.97))
-plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_footprint.pdf", bbox_inches='tight')
+plt.savefig(f"../results/figures/representative_{tf1}_{tf2}_{TAG}_footprint.pdf", bbox_inches='tight', dpi=FIG_DPI)
 plt.show()
 plt.close()''',
 ]
