@@ -172,7 +172,7 @@ footer .wrap{padding-block:24px 34px;font-family:var(--mono);font-size:11.5px;co
 
 <footer><div class="wrap">
   <span>AlphaFold 3 predictions · unpublished work in progress · light → dark = 5′ → 3′ of each motif</span>
-  <span>drag to rotate · scroll to zoom · both views move together · <a href="overview.html">full write-up</a></span>
+  <span>hover to name a residue · drag to rotate · scroll to zoom · both views move together · <a href="overview.html">full write-up</a></span>
 </div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
@@ -195,6 +195,9 @@ function shades(m){
   return out;
 }
 
+const PARTNER={lef1:"LEF1",ets1:"ETS1"}, MOTIF={lef1:"LEF1",ets1:"ETS"};
+const AA=n=>n.charAt(0)+n.slice(1).toLowerCase();
+
 function setup(key){
   const root=document.getElementById(key);
   const pane={}; root.querySelectorAll(".pane").forEach(p=>pane[p.dataset.c]={el:p,V:null,ids:{}});
@@ -214,15 +217,30 @@ function setup(key){
     const m=META[key][cls], V=pane[cls].V, id=pane[cls].ids[cls];
     const sh=shades(m), dna=css("--dna"), tf1=css("--tf1"), tf2=css("--tf2"), con=css("--contact");
     const ntCol=a=>{ const i=a.chain==="C"?a.resi:m.n+1-a.resi; return sh[i]||dna; };
-    V.removeAllSurfaces(); V.setStyle({},{});
+    V.removeAllSurfaces(); V.removeAllLabels(); V.setStyle({},{});
     const A={model:id,chain:"A"}, B={model:id,chain:"B"}, D={model:id,chain:["C","D"]};
     const F=m.foot.length?{model:id,chain:"A",resi:m.foot}:null;
     V.setStyle(D,{cartoon:{colorfunc:ntCol,thickness:.3},stick:{colorfunc:ntCol,radius:.16}});
+    /* hover: name the amino acid or nucleotide under the pointer */
+    const motifAt={}; m.motifs.forEach(mo=>{ for(let j=0;j<mo.len;j++) motifAt[mo.start+j]=mo.k==="m1"?"RUNX":MOTIF[key]; });
+    const name=a=>{
+      if(a.chain==="A") return "RUNX1 "+AA(a.resn)+a.resi+(m.foot.includes(a.resi)?" · contact":"");
+      if(a.chain==="B") return PARTNER[key]+" "+AA(a.resn)+a.resi;
+      const i=a.chain==="C"?a.resi:m.n+1-a.resi;
+      return a.resn.replace(/^D/,"")+a.resi+(a.chain==="C"?" top":" bottom")+" strand"+(motifAt[i]?" · "+motifAt[i]+" motif":"");
+    };
+    V.setHoverable({},false);
+    V.setHoverable({model:id},true,
+      (a,v)=>{ if(a.hov) return; a.hov=v.addLabel(name(a),{position:a,fontSize:12,font:"Arial",
+        backgroundColor:css("--ink"),backgroundOpacity:.92,fontColor:css("--surface"),borderThickness:0,
+        inFront:true,alignment:"bottomCenter"}); v.render(); },
+      (a,v)=>{ if(!a.hov) return; v.removeLabel(a.hov); delete a.hov; v.render(); });
     if(view==="complex"){
       V.setStyle(A,{cartoon:{color:tf1,thickness:.4}});
       V.setStyle(B,{cartoon:{color:tf2,thickness:.4}});
       if(F) V.addSurface($3Dmol.SurfaceType.MS,{color:con,opacity:.82},F,A);
     } else {
+      V.setStyle(A,{cartoon:{color:css("--tf1-soft"),thickness:.3}});  /* hidden under the surface; keeps hover working */
       V.setStyle(B,{cartoon:{color:tf2,thickness:.3,opacity:.45}});
       V.addSurface($3Dmol.SurfaceType.MS,{color:css("--tf1-soft"),opacity:1},
         F?{model:id,chain:"A",not:{resi:m.foot}}:A,A);
@@ -255,6 +273,7 @@ function setup(key){
         /* both models go into both viewers so that the two share one frame; each shows its own */
         pane[c].ids.high=V.addModel(txt[0],"pdb").getID();
         pane[c].ids.low=V.addModel(txt[1],"pdb").getID();
+        V.setHoverDuration(120);
         pane[c].V=V;
       }
     }catch(e){ fail("3D viewer unavailable"); return; }
