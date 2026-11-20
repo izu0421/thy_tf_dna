@@ -1,0 +1,22 @@
+# large or regenerable outputs (kept on RDS, not in git)
+af3_screen_n100_rho0.6/inputs_*/
+af3_screen_n100_rho0.6/outputs_*/
+af3_screen_n100_rho0.6/logs/
+af3_control_runx1_ets1_4L0Z/inputs_inference/
+af3_control_runx1_ets1_4L0Z/outputs_inference/
+af3_control_runx1_ets1_4L0Z/logs/
+archive/
+logs/
+results/cache/
+# rendered panels and animations (the PDF figures are tracked)
+results/figures/**/*.png
+results/figures/**/*.mp4
+results/figures/**/*.gif
+# notebook 5 carries 69 MB of embedded output; track it only after stripping outputs
+notebooks/5_interactive_and_animated_structures_n100_rho0.6.ipynb
+notebooks/5_interactive_and_animated_structures_n100_rho0.6.html
+# misc
+*.ai
+.ipynb_checkpoints/
+__pycache__/
+.vscode/

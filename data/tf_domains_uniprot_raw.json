@@ -1,0 +1,926 @@
+{
+ "BCL11B": {
+  "accession": "Q9C0K0",
+  "entry_version": 190,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 221,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 251,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 1",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 427,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 454,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 2",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 455,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 482,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 3",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 796,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 823,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 4",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 824,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 853,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 5",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 854,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 884,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 6",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   }
+  ]
+ },
+ "CBFB": {
+  "accession": "Q13951",
+  "entry_version": 214,
+  "sequence_version": 2,
+  "features": []
+ },
+ "EBF2": {
+  "accession": "Q9HAK2",
+  "entry_version": 181,
+  "sequence_version": 4,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 253,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 336,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "IPT/TIG"
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 150,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 169,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C5-type",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255"
+     }
+    ]
+   }
+  ]
+ },
+ "EBF3": {
+  "accession": "Q9H4W6",
+  "entry_version": 193,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 263,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 346,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "IPT/TIG"
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 151,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 170,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C5-type",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255"
+     }
+    ]
+   }
+  ]
+ },
+ "ETS1": {
+  "accession": "P14921",
+  "entry_version": 249,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 51,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 136,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "PNT",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00762"
+     }
+    ]
+   },
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 335,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 415,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "ETS",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00237"
+     }
+    ]
+   }
+  ]
+ },
+ "GABPA": {
+  "accession": "Q06546",
+  "entry_version": 226,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 168,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 251,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "PNT",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00762"
+     }
+    ]
+   },
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 320,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 400,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "ETS",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00237"
+     }
+    ]
+   }
+  ]
+ },
+ "GRHL2": {
+  "accession": "Q6ISB3",
+  "entry_version": 170,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 244,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 482,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Grh/CP2 DB",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU01313"
+     }
+    ]
+   }
+  ]
+ },
+ "IKZF1": {
+  "accession": "Q13422",
+  "entry_version": 226,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 117,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 139,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 1",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 145,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 167,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 2",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 173,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 195,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 3",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 201,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 224,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 4",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 462,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 484,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 5",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   },
+   {
+    "type": "Zinc finger",
+    "location": {
+     "start": {
+      "value": 490,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 514,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "C2H2-type 6",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00042"
+     }
+    ]
+   }
+  ]
+ },
+ "IRF2": {
+  "accession": "P14316",
+  "entry_version": 215,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 5,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 113,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "IRF tryptophan pentad repeat",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00840"
+     }
+    ]
+   }
+  ]
+ },
+ "IRF3": {
+  "accession": "Q14653",
+  "entry_version": 228,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 5,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 111,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "IRF tryptophan pentad repeat",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00840"
+     }
+    ]
+   }
+  ]
+ },
+ "IRF8": {
+  "accession": "Q02556",
+  "entry_version": 209,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 7,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 114,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "IRF tryptophan pentad repeat",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00840"
+     }
+    ]
+   }
+  ]
+ },
+ "LEF1": {
+  "accession": "Q9UJU2",
+  "entry_version": 223,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 299,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 367,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "HMG box",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00267"
+     }
+    ]
+   }
+  ]
+ },
+ "NFIA": {
+  "accession": "Q12857",
+  "entry_version": 215,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 1,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 194,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "CTF/NF-I",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00436"
+     }
+    ]
+   }
+  ]
+ },
+ "NFIB": {
+  "accession": "O00712",
+  "entry_version": 210,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 1,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 195,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "CTF/NF-I",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00436"
+     }
+    ]
+   }
+  ]
+ },
+ "NFKB2": {
+  "accession": "Q00653",
+  "entry_version": 270,
+  "sequence_version": 4,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 38,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 343,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "RHD",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00265"
+     }
+    ]
+   },
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 764,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 851,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Death"
+   }
+  ]
+ },
+ "PKNOX2": {
+  "accession": "Q96KN3",
+  "entry_version": 181,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 96,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 179,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "MEIS N-terminal",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255"
+     }
+    ]
+   },
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 291,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 350,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Homeobox",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00108"
+     }
+    ]
+   }
+  ]
+ },
+ "RELB": {
+  "accession": "Q01201",
+  "entry_version": 223,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 125,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 440,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "RHD",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00265"
+     }
+    ]
+   }
+  ]
+ },
+ "RUNX1": {
+  "accession": "Q01196",
+  "entry_version": 269,
+  "sequence_version": 3,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 50,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 178,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Runt",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00399"
+     }
+    ]
+   }
+  ]
+ },
+ "RUNX2": {
+  "accession": "Q13950",
+  "entry_version": 229,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 101,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 229,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Runt",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00399"
+     }
+    ]
+   }
+  ]
+ },
+ "RUNX3": {
+  "accession": "Q13761",
+  "entry_version": 234,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 54,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 182,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "Runt",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00399"
+     }
+    ]
+   }
+  ]
+ },
+ "SPI1": {
+  "accession": "P17947",
+  "entry_version": 225,
+  "sequence_version": 2,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 170,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 253,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "ETS",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00237"
+     }
+    ]
+   }
+  ]
+ },
+ "TCF7": {
+  "accession": "P36402",
+  "entry_version": 227,
+  "sequence_version": 4,
+  "features": [
+   {
+    "type": "DNA binding",
+    "location": {
+     "start": {
+      "value": 269,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 337,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "HMG box",
+    "evidences": [
+     {
+      "evidenceCode": "ECO:0000255",
+      "source": "PROSITE-ProRule",
+      "id": "PRU00267"
+     }
+    ]
+   }
+  ]
+ },
+ "TP73": {
+  "accession": "O15350",
+  "entry_version": 256,
+  "sequence_version": 1,
+  "features": [
+   {
+    "type": "Domain",
+    "location": {
+     "start": {
+      "value": 485,
+      "modifier": "EXACT"
+     },
+     "end": {
+      "value": 551,
+      "modifier": "EXACT"
+     }
+    },
+    "description": "SAM"
+   }
+  ]
+ }
+}

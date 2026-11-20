@@ -1,0 +1,45 @@
+TF,accession,domain,start,end
+BCL11B,Q9C0K0,BCL-11A-like CCHC zinc finger,55,82
+BCL11B,Q9C0K0,C2H2-type 1,221,251
+BCL11B,Q9C0K0,"C2H2-type 2 / Zinc finger, C2H2 type / C2H2-type 3",427,482
+BCL11B,Q9C0K0,"C2H2-type 4 / Zinc finger, C2H2 type / C2H2-type 5 / C2H2 zinc finger / C2H2-type 6",796,884
+CBFB,Q13951,Core binding factor beta subunit,1,166
+EBF2,Q9HAK2,Transcription factor COE1 DNA-binding domain / C5-type,17,246
+EBF2,Q9HAK2,IPT/TIG domain / IPT/TIG / Transcription factor COE1 helix-loop-helix domain,253,381
+EBF3,Q9H4W6,Transcription factor COE1 DNA-binding domain / C5-type,18,247
+EBF3,Q9H4W6,IPT/TIG / IPT/TIG domain / Transcription factor COE1 helix-loop-helix domain,263,391
+ETS1,P14921,PNT / Sterile alpha motif (SAM)/Pointed domain,51,136
+ETS1,P14921,ETS / Ets-domain,335,415
+GABPA,Q06546,PNT / Sterile alpha motif (SAM)/Pointed domain,168,251
+GABPA,Q06546,Ets-domain / ETS,319,400
+GRHL2,Q6ISB3,CP2 transcription factor / Grh/CP2 DB,229,482
+GRHL2,Q6ISB3,"GRHL1-like, C-terminal domain",536,624
+IKZF1,Q13422,C2H2-type 1,117,139
+IKZF1,Q13422,"C2H2-type 2 / Zinc finger, C2H2 type",145,167
+IKZF1,Q13422,"Zinc finger, C2H2 type / C2H2-type 3",173,195
+IKZF1,Q13422,"Zinc finger, C2H2 type / C2H2-type 4",201,224
+IKZF1,Q13422,Ikaros family C-terminal zinc finger dimerisation domain / C2H2-type 5 / C2H2-type 6,450,514
+IRF2,P14316,IRF tryptophan pentad repeat / Interferon regulatory factor transcription factor,5,113
+IRF3,Q14653,IRF tryptophan pentad repeat / Interferon regulatory factor transcription factor,5,111
+IRF3,Q14653,Interferon-regulatory factor 3,202,379
+IRF8,Q02556,IRF tryptophan pentad repeat / Interferon regulatory factor transcription factor,7,114
+IRF8,Q02556,Interferon-regulatory factor 3,203,381
+LEF1,Q9UJU2,HMG (high mobility group) box / HMG box,299,367
+NFIA,Q12857,CTF/NF-I / MH1 domain,1,194
+NFIB,O00712,CTF/NF-I / MH1 domain,1,195
+NFKB2,Q00653,RHD / Rel homology DNA-binding domain / Rel homology dimerisation domain,38,343
+NFKB2,Q00653,Ankyrin repeats (3 copies),473,553
+NFKB2,Q00653,Ankyrin repeats (3 copies),605,697
+NFKB2,Q00653,Death / Death domain,764,851
+PKNOX2,Q96KN3,TALE/MEIS homeobox family N-terminal domain / MEIS N-terminal,68,179
+PKNOX2,Q96KN3,Homeobox / Homeobox KN domain,291,350
+RELB,Q01201,RelB leucine zipper,18,102
+RELB,Q01201,RHD / Rel homology DNA-binding domain / Rel homology dimerisation domain,125,440
+RUNX1,Q01196,Runt / Runt domain,50,179
+RUNX2,Q13950,Runt / Runt domain,101,230
+RUNX3,Q13761,Runt / Runt domain,54,183
+SPI1,P17947,Ets-domain / ETS,169,253
+TCF7,P36402,HMG box / HMG (high mobility group) box,269,337
+TP73,O15350,P53 DNA-binding domain,118,308
+TP73,O15350,P53 tetramerisation motif,345,384
+TP73,O15350,SAM / SAM domain (Sterile alpha motif),485,551

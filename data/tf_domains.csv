@@ -1,0 +1,100 @@
+TF,accession,source,type,name,start,end,length
+BCL11B,Q9C0K0,Pfam,Pfam domain,PF25491 BCL-11A-like CCHC zinc finger,55,82,894
+BCL11B,Q9C0K0,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",428,449,894
+BCL11B,Q9C0K0,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",455,477,894
+BCL11B,Q9C0K0,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",797,818,894
+BCL11B,Q9C0K0,Pfam,Pfam domain,PF23611 C2H2 zinc finger,824,847,894
+BCL11B,Q9C0K0,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",854,877,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 1,221,251,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 2,427,454,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 3,455,482,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 4,796,823,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 5,824,853,894
+BCL11B,Q9C0K0,UniProt,Zinc finger,C2H2-type 6,854,884,894
+CBFB,Q13951,Pfam,Pfam family,PF02312 Core binding factor beta subunit,1,166,182
+EBF2,Q9HAK2,Pfam,Pfam domain,PF16422 Transcription factor COE1 DNA-binding domain,17,246,575
+EBF2,Q9HAK2,Pfam,Pfam domain,PF01833 IPT/TIG domain,253,333,575
+EBF2,Q9HAK2,Pfam,Pfam domain,PF16423 Transcription factor COE1 helix-loop-helix domain,338,381,575
+EBF2,Q9HAK2,UniProt,Zinc finger,C5-type,150,169,575
+EBF2,Q9HAK2,UniProt,Domain,IPT/TIG,253,336,575
+EBF3,Q9H4W6,Pfam,Pfam domain,PF16422 Transcription factor COE1 DNA-binding domain,18,247,596
+EBF3,Q9H4W6,Pfam,Pfam domain,PF01833 IPT/TIG domain,263,345,596
+EBF3,Q9H4W6,Pfam,Pfam domain,PF16423 Transcription factor COE1 helix-loop-helix domain,348,391,596
+EBF3,Q9H4W6,UniProt,Zinc finger,C5-type,151,170,596
+EBF3,Q9H4W6,UniProt,Domain,IPT/TIG,263,346,596
+ETS1,P14921,Pfam,Pfam domain,PF02198 Sterile alpha motif (SAM)/Pointed domain,54,135,441
+ETS1,P14921,Pfam,Pfam domain,PF19525 Ets1 N-terminal flanking region of Ets domain,148,332,441
+ETS1,P14921,Pfam,Pfam domain,PF00178 Ets-domain,335,415,441
+ETS1,P14921,UniProt,Domain,PNT,51,136,441
+ETS1,P14921,UniProt,DNA binding,ETS,335,415,441
+GABPA,Q06546,Pfam,Pfam family,PF11620 GA-binding protein alpha chain,37,119,454
+GABPA,Q06546,Pfam,Pfam domain,PF02198 Sterile alpha motif (SAM)/Pointed domain,171,250,454
+GABPA,Q06546,Pfam,Pfam domain,PF00178 Ets-domain,319,400,454
+GABPA,Q06546,UniProt,Domain,PNT,168,251,454
+GABPA,Q06546,UniProt,DNA binding,ETS,320,400,454
+GRHL2,Q6ISB3,Pfam,Pfam domain,PF04516 CP2 transcription factor,229,438,625
+GRHL2,Q6ISB3,Pfam,Pfam domain,"PF25416 GRHL1-like, C-terminal domain",536,624,625
+GRHL2,Q6ISB3,UniProt,Domain,Grh/CP2 DB,244,482,625
+IKZF1,Q13422,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",145,167,519
+IKZF1,Q13422,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",173,195,519
+IKZF1,Q13422,Pfam,Pfam domain,"PF00096 Zinc finger, C2H2 type",201,224,519
+IKZF1,Q13422,Pfam,Pfam domain,PF33116 Ikaros family C-terminal zinc finger dimerisation domain,450,504,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 1,117,139,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 2,145,167,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 3,173,195,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 4,201,224,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 5,462,484,519
+IKZF1,Q13422,UniProt,Zinc finger,C2H2-type 6,490,514,519
+IRF2,P14316,Pfam,Pfam domain,PF00605 Interferon regulatory factor transcription factor,7,112,349
+IRF2,P14316,UniProt,DNA binding,IRF tryptophan pentad repeat,5,113,349
+IRF3,Q14653,Pfam,Pfam domain,PF00605 Interferon regulatory factor transcription factor,8,110,427
+IRF3,Q14653,Pfam,Pfam family,PF10401 Interferon-regulatory factor 3,202,379,427
+IRF3,Q14653,UniProt,DNA binding,IRF tryptophan pentad repeat,5,111,427
+IRF8,Q02556,Pfam,Pfam domain,PF00605 Interferon regulatory factor transcription factor,9,113,426
+IRF8,Q02556,Pfam,Pfam family,PF10401 Interferon-regulatory factor 3,203,381,426
+IRF8,Q02556,UniProt,DNA binding,IRF tryptophan pentad repeat,7,114,426
+LEF1,Q9UJU2,Pfam,Pfam family,PF08347 N-terminal CTNNB1 binding,9,213,399
+LEF1,Q9UJU2,Pfam,Pfam domain,PF00505 HMG (high mobility group) box,299,367,399
+LEF1,Q9UJU2,UniProt,DNA binding,HMG box,299,367,399
+NFIA,Q12857,Pfam,Pfam family,PF10524 Nuclear factor I protein pre-N-terminus,8,46,509
+NFIA,Q12857,Pfam,Pfam domain,PF03165 MH1 domain,69,170,509
+NFIA,Q12857,Pfam,Pfam family,PF00859 CTF/NF-I family transcription modulation region,214,501,509
+NFIA,Q12857,UniProt,DNA binding,CTF/NF-I,1,194,509
+NFIB,O00712,Pfam,Pfam family,PF10524 Nuclear factor I protein pre-N-terminus,9,47,420
+NFIB,O00712,Pfam,Pfam domain,PF03165 MH1 domain,70,171,420
+NFIB,O00712,Pfam,Pfam family,PF00859 CTF/NF-I family transcription modulation region,209,415,420
+NFIB,O00712,UniProt,DNA binding,CTF/NF-I,1,195,420
+NFKB2,Q00653,Pfam,Pfam domain,PF00554 Rel homology DNA-binding domain,40,220,900
+NFKB2,Q00653,Pfam,Pfam domain,PF16179 Rel homology dimerisation domain,229,327,900
+NFKB2,Q00653,Pfam,Pfam repeat,PF12796 Ankyrin repeats (3 copies),473,553,900
+NFKB2,Q00653,Pfam,Pfam repeat,PF12796 Ankyrin repeats (3 copies),605,697,900
+NFKB2,Q00653,Pfam,Pfam domain,PF00531 Death domain,776,848,900
+NFKB2,Q00653,UniProt,Domain,RHD,38,343,900
+NFKB2,Q00653,UniProt,Domain,Death,764,851,900
+PKNOX2,Q96KN3,Pfam,Pfam domain,PF16493 TALE/MEIS homeobox family N-terminal domain,68,173,472
+PKNOX2,Q96KN3,Pfam,Pfam family,PF05920 Homeobox KN domain,306,345,472
+PKNOX2,Q96KN3,UniProt,Domain,MEIS N-terminal,96,179,472
+PKNOX2,Q96KN3,UniProt,DNA binding,Homeobox,291,350,472
+RELB,Q01201,Pfam,Pfam domain,PF16180 RelB leucine zipper,18,102,579
+RELB,Q01201,Pfam,Pfam domain,PF00554 Rel homology DNA-binding domain,127,295,579
+RELB,Q01201,Pfam,Pfam domain,PF16179 Rel homology dimerisation domain,304,400,579
+RELB,Q01201,Pfam,Pfam domain,PF16181 RelB transactivation domain,403,579,579
+RELB,Q01201,UniProt,Domain,RHD,125,440,579
+RUNX1,Q01196,Pfam,Pfam domain,PF00853 Runt domain,51,179,453
+RUNX1,Q01196,Pfam,Pfam family,PF08504 Runx inhibition domain,362,453,453
+RUNX1,Q01196,UniProt,Domain,Runt,50,178,453
+RUNX2,Q13950,Pfam,Pfam domain,PF00853 Runt domain,102,230,521
+RUNX2,Q13950,Pfam,Pfam family,PF08504 Runx inhibition domain,430,521,521
+RUNX2,Q13950,UniProt,Domain,Runt,101,229,521
+RUNX3,Q13761,Pfam,Pfam domain,PF00853 Runt domain,55,183,415
+RUNX3,Q13761,Pfam,Pfam family,PF08504 Runx inhibition domain,317,415,415
+RUNX3,Q13761,UniProt,Domain,Runt,54,182,415
+SPI1,P17947,Pfam,Pfam domain,PF00178 Ets-domain,169,253,270
+SPI1,P17947,UniProt,DNA binding,ETS,170,253,270
+TCF7,P36402,Pfam,Pfam family,PF08347 N-terminal CTNNB1 binding,10,212,384
+TCF7,P36402,Pfam,Pfam domain,PF00505 HMG (high mobility group) box,269,337,384
+TCF7,P36402,UniProt,DNA binding,HMG box,269,337,384
+TP73,O15350,Pfam,Pfam domain,PF00870 P53 DNA-binding domain,118,308,636
+TP73,O15350,Pfam,Pfam conserved_site,PF07710 P53 tetramerisation motif,345,384,636
+TP73,O15350,Pfam,Pfam domain,PF07647 SAM domain (Sterile alpha motif),487,548,636
+TP73,O15350,UniProt,Domain,SAM,485,551,636

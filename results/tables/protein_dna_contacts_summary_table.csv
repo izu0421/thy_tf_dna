@@ -1,0 +1,10 @@
+metric,mean_high,mean_low,diff,mannwhitney_p,direction,significant_p<0.05
+PP_vdw,269.9231,220.7528,49.1703,0.0,high > low,True
+PP_hbond,13.3275,10.5897,2.7378,0.0,high > low,True
+PP_saltbridge,4.9828,4.0066,0.9762,0.0,high > low,True
+DNA_vdw_base_total,201.81,201.0181,0.7919,0.0,high > low,True
+DNA_vdw_backbone_total,390.5231,375.9559,14.5672,0.0,high > low,True
+DNA_hbond_base_total,19.3103,19.4669,-0.1566,0.0437,low > high,True
+DNA_hbond_backbone_total,29.7834,29.3872,0.3963,0.3106,high > low,False
+DNA_saltbridge_backbone_total,16.4728,16.4359,0.0369,0.0941,high > low,False
+DNA_vdw_frac_base_total,0.3324,0.339,-0.0066,0.0157,low > high,True
